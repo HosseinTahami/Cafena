@@ -1,5 +1,8 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.views.generic import ListView
 from .cart import Cart
 from cafe.models import Product
 from .forms import CartAddForm, CustomerForm
@@ -121,3 +124,17 @@ class OrderDetailView(View):
     def get(self, request):
         session = request.session.get("orders_info")
         return render(request, "orders/detail.html", {"session": session})
+
+class OrderRecords(ListView):
+
+    model = Order
+    template_name = ''
+    context_object_name = 'orders'
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        # use url-parameter to get phone number
+        phone_number = self.kwargs['phone_number']
+        
+        customer = Customer.objects.get(phone_number = phone_number)
+
+        return Order.objects.filter(customer = customer)
