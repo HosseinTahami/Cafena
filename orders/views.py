@@ -129,7 +129,7 @@ class OrderRecords(ListView):
     template_name = ''
     context_object_name = 'orders'
     
-    def get_queryset(self) -> QuerySet[Any]:
+    def get_queryset(self):
         # use url-parameter to get phone number
         phone_number = self.kwargs['phone_number']
         
