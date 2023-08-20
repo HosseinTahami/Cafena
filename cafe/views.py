@@ -29,7 +29,6 @@ class HomeView(View):
             return render(request, "cafe/home.html", context)
 
         else:
-            searched = request.GET.get("searched")
             all_categories = Category.objects.all()
             all_products = Product.objects.all()
             form = CartAddForm()
