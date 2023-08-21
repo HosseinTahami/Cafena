@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 
 # inner modules imports
 from .cart import Cart
@@ -44,12 +45,14 @@ class CheckoutView(View):
     def get(self, request):
         cart = Cart(request)
         try:
-            last_phone_number = list(request.session.get("orders_info").values())[-1][-1]
+            last_phone_number = list(request.session.get("orders_info").values())[-1][
+                -1
+            ]
         except:
             last_phone_number = None
         total_price = cart.total_price()
         print(request.session.get("orders_info"))
-        initial_values = {'phone_number': last_phone_number}
+        initial_values = {"phone_number": last_phone_number}
         form = CustomerForm(initial=initial_values)
         page_data = PageData.get_page_date("Checkout_Page")
         context = {"form": form, "page_data": page_data, "total_price": total_price}
@@ -120,18 +123,19 @@ class OrderReject(View):
 class OrdersHistoryView(View):
     def get(self, request):
         session = request.session.get("orders_info")
-        print(request.session)
-        print(session)
         try:
             order_ids = list(session.keys())
-            orders = Order.objects.filter(id__in=order_ids)
+            orders = Order.objects.filter(id__in=order_ids).order_by("-create_time")
+            paginator = Paginator(orders, 5)
+            page_number = request.GET.get("page")
+            page_obj = paginator.get_page(page_number)
         except:
-            orders = None
+            page_obj = None
         page_data = PageData.get_page_date("Details_Page")
         return render(
             request,
             "orders/orders_history.html",
-            {"orders": orders, "page_data": page_data},
+            {"page_obj": page_obj, "page_data": page_data},
         )
 
 
@@ -141,7 +145,7 @@ class ReorderView(View):
     def get(self, request, order_id):
         order = Order.objects.get(id=order_id)
         last_phone_number = list(request.session.get("orders_info").values())[-1][-1]
-        initial_values = {'phone_number': last_phone_number}
+        initial_values = {"phone_number": last_phone_number}
         form = self.form_class(initial=initial_values)
         page_data = PageData.get_page_date("Checkout_Page")
         context = {"form": form, "page_data": page_data, "order": order}
@@ -176,7 +180,7 @@ class ReorderView(View):
                     quantity=orderitem.quantity,
                     price=orderitem.price,
                 )
-            
+
                 session_order.append(
                     {
                         "product": orderitem.product.name,
