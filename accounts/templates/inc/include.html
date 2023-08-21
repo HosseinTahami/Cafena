@@ -4,7 +4,7 @@
 {% load static %}
 <div class="dashboard-header">
     <nav class="navbar navbar-expand bg-white fixed-top">
-        <a class="navbar-brand" href="{% url 'accounts:dashboard' %}">Orders and Analytics</a>
+        <a class="navbar-brand" href="{% url 'accounts:dashboard' %}">{{page_data.name}}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -35,7 +35,7 @@
 <!-- ============================================================== -->
 <!-- left sidebar -->
 <!-- ============================================================== -->
-<div class="nav-left-sidebar sidebar-dark">
+<div class="nav-left-sidebar sidebar-dark" style="background-color: \{\{'page_data.menu_bg_color'\}\};">
     <div class="menu-list">
         <nav class="navbar navbar-expand-lg  navbar-light">
             <a class="d-xl-none d-lg-none" href="#">Menu</a>
