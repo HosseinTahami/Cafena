@@ -10,6 +10,7 @@ from utils import send_otp_code
 from orders.models import Order
 from .utils_dashboard import OrdersManager, SalesDashboardVars, DashboardVars
 from .forms import UserCustomerLoginForm, OTPForm
+from dynamic.models import Dashboard
 
 # third party imports
 from random import randint
@@ -110,6 +111,11 @@ class DashboardView(View):
     def get(self, request):
         context_instance = DashboardVars()
         context = context_instance()
+
+        # dynamic data
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context['page_data'] = page_data
+
         return render(request, "accounts/dashboard.html", context=context)
 
 
@@ -117,6 +123,11 @@ class SalesDashboardView(View):
     def get(self, request):
         context_instance = SalesDashboardVars()
         context = context_instance()
+
+        # dynamic data
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context['page_data'] = page_data
+
         return render(request, "accounts/sales_dashboard.html", context=context)
 
 
@@ -139,4 +150,9 @@ class ShowAllOrders(TemplateView):
         orders_manager = OrdersManager()
         orders_with_costs = orders_manager.orders_with_costs(None)
         context["orders_with_costs"] = orders_with_costs
+        
+        # dynamic data
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context['page_data'] = page_data
+
         return context
