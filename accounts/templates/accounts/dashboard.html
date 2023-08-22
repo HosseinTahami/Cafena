@@ -207,7 +207,15 @@
                             <div class="row align-content-stretch">
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                                 <div class="card">
-                                    <h5 class="card-header">Orders By Status</h5>
+                                    <h5 class="card-header">Orders By Status
+                                        <form action="" method="get">
+                                            <label for="date1">From:</label>
+                                            <input type="date" id="date1" name="orders_status_date1" required>
+                                            <label for="date2">To:</label>
+                                            <input type="date" id="date2" name="orders_status_date2" required>
+                                            <input type="submit" value="Submit">
+                                        </form>
+                                    </h5>
                                     <div class="card-body">
                                         <canvas id="ordersStatusChart"></canvas>
                                     </div>

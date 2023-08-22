@@ -10,6 +10,7 @@ import json
 from typing import List, Iterable
 import pytz
 
+
 def get_date_from_staff(request, query, date1, date2):
     result = query
     date1_ = request.GET.get(date1)
@@ -17,6 +18,7 @@ def get_date_from_staff(request, query, date1, date2):
     if date1 and date2:
         result = query(date1_, date2_)
     return result
+
 
 class DateVars:
     current_date: datetime = datetime.datetime.now(
@@ -255,9 +257,13 @@ class OrdersManager:
 
         return json.dumps(each_hour)
 
-    def get_count_by_status(self):
+    def get_count_by_status(self, date1=None, date2=None):
+        if not date1 and not date2:
+            date1 = DateVars.current_date
+            date2 = DateVars.current_date
+
         counts_by_status = Order.objects.filter(
-            create_time__date=DateVars.current_date
+            create_time__date__range=(date1, date2)
         ).aggregate(
             accepted=Count(Case(When(status="a", then=1), output_field=IntegerField())),
             pending=Count(Case(When(status="p", then=1), output_field=IntegerField())),
@@ -626,14 +632,30 @@ class DashboardVars:
         orders_with_costs = orders.orders_with_costs(10)
         orders_count = orders.count_orders()
         total_sales = orders.total_sales()
-        orders_count_by_status = orders.get_count_by_status()
         personnels_count = Personnel.objects.all().count()
+        orders_count_by_status = orders.get_count_by_status
+        orders_count_by_status = get_date_from_staff(
+            request,
+            orders_count_by_status,
+            "orders_status_date1",
+            "orders_status_date2",
+        )
 
         each_hour = orders.get_peak_business_hours
-        each_hour = get_date_from_staff(request, each_hour, "peak_bussiness_hours_date1", "peak_bussiness_hours_date2")
+        each_hour = get_date_from_staff(
+            request,
+            each_hour,
+            "peak_bussiness_hours_date1",
+            "peak_bussiness_hours_date2",
+        )
 
         each_personnel_count = orders.get_personnel_count_by_date
-        each_personnel_count = get_date_from_staff(request, each_personnel_count, "orders_personnel_date1", "orders_personnel_date2")
+        each_personnel_count = get_date_from_staff(
+            request,
+            each_personnel_count,
+            "orders_personnel_date1",
+            "orders_personnel_date2",
+        )
 
         categories = MostSellerCategories()
         best_categories_all = categories.most_seller_categories_all(5)
@@ -694,6 +716,3 @@ class DashboardVars:
         }
 
         return context
-
-
-
