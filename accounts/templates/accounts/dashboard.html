@@ -70,62 +70,7 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <!-- recent orders  -->
-                        <!-- ============================================================== -->
-                        <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="card">
-                                    <h5 class="card-header">Recent Orders</h5>
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <thead class="bg-light">
-                                                    <tr class="border-0">
-                                                        <th class="border-0">Order Id</th>
-                                                        <th class="border-0">Price</th>
-                                                        <th class="border-0">Order Time</th>
-                                                        <th class="border-0">Customer</th>
-                                                        <th class="border-0">Status</th>
-                                                        <th class="border-0">Details</th>
-                                                        <th class="border-0">Accept</th>
-                                                        <th class="border-0">Reject</th>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for order, cost in orders_with_costs %}
-                                                    <tr>
-                                                        <td>{{ order.id }} </td>
-                                                        <td>{{ cost }}</td>
-                                                        <td>{{ order.create_time }}</td>
-                                                        <td>{{ order.customer }} </td>
-                                                        <td>
-                                                            <span class="badge-dot {% if order.status == 'p' %}badge-brand {% elif order.status == 'r' %}badge-danger {% else %} badge-success {% endif %}mr-1"></span>
-                                                            {% if order.status == 'p' %}Pending {% elif order.status == 'r' %}Rejected {% else %} Accepted {% endif %}
-                                                        </td>
-                                                        <td><a href="{% url 'accounts:order_detail' order.pk %}" class="btn btn-primary"> details </a></td>
-                                                        {% if order.status == 'p' %}
-                                                            <td><a href="{% url 'orders:order_accept' order.pk %}" class="btn btn-success">accept</a></td>
-                                                            <td><a href="{% url 'orders:order_reject' order.pk %}" class="btn btn-danger">reject</a></td>
-                                                        {% else %}
-                                                            <td></td>
-                                                            <td></td>
-                                                        {% endif %}
-                                                    </tr>
-                                                    {% endfor %}
-                                                    <tr>
-                                                        <td colspan="9"><a href="#" class="btn btn-outline-light float-right">View Details</a></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                            <!-- ============================================================== -->
-                            <!-- end recent orders  -->
-
+                       
 
                             <!-- ============================================================== -->
                             <!-- product category  -->
@@ -289,17 +234,19 @@
                             <!-- ============================================================== -->
                             <!-- End Custom Customer&Category and get count personnel  -->
                             <!-- ============================================================== -->
-                            <div class="row  mb-5">
+                            <div class="row  mb-2">
+                            <a id="order-by-status"></a>
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
                                 <div class="card flex-fill">
                                     <h5 class="card-header">Orders By Status
-                                        <form action="" method="get">
+                                        <form action="#order-by-status" method="get">
                                             <label for="date1">From:</label>
                                             <input type="date" id="date1" name="orders_status_date1" required>
                                             <label for="date2">To:</label>
                                             <input type="date" id="date2" name="orders_status_date2" required>
                                             <input type="submit" value="Submit">
                                         </form>
+
                                     </h5>
                                     <div class="card-body">
                                         <canvas id="ordersStatusChart"></canvas>
@@ -330,6 +277,63 @@
                                    <!-- End Status and Peak  -->
                             <!-- ============================================================== -->
 
+ <!-- recent orders  -->
+                        <!-- ============================================================== -->
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">Recent Orders</h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">Order Id</th>
+                                                        <th class="border-0">Price</th>
+                                                        <th class="border-0">Order Time</th>
+                                                        <th class="border-0">Customer</th>
+                                                        <th class="border-0">Status</th>
+                                                        <th class="border-0">Details</th>
+                                                        <th class="border-0">Accept</th>
+                                                        <th class="border-0">Reject</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for order, cost in orders_with_costs %}
+                                                    <tr>
+                                                        <td>{{ order.id }} </td>
+                                                        <td>{{ cost }}</td>
+                                                        <td>{{ order.create_time }}</td>
+                                                        <td>{{ order.customer }} </td>
+                                                        <td>
+                                                            <span class="badge-dot {% if order.status == 'p' %}badge-brand {% elif order.status == 'r' %}badge-danger {% else %} badge-success {% endif %}mr-1"></span>
+                                                            {% if order.status == 'p' %}Pending {% elif order.status == 'r' %}Rejected {% else %} Accepted {% endif %}
+                                                        </td>
+                                                        <td><a href="{% url 'accounts:order_detail' order.pk %}" class="btn btn-primary"> details </a></td>
+                                                        {% if order.status == 'p' %}
+                                                            <td><a href="{% url 'orders:order_accept' order.pk %}" class="btn btn-success">accept</a></td>
+                                                            <td><a href="{% url 'orders:order_reject' order.pk %}" class="btn btn-danger">reject</a></td>
+                                                        {% else %}
+                                                            <td></td>
+                                                            <td></td>
+                                                        {% endif %}
+                                                    </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td colspan="9"><a href="#" class="btn btn-outline-light float-right">View Details</a></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- ============================================================== -->
+                            <!-- end recent orders  -->
+
+
                     </div>
                     
                     
@@ -352,6 +356,15 @@
     <!-- jquery 3.3.1 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+
+        // Check if the URL contains a hash anchor, and focus on the element if it does
+        const hash = window.location.hash;
+        if (hash === "#form-anchor") {
+            const hourInput = document.getElementById("hour");
+            if (hourInput) {
+                hourInput.focus();
+            }
+        }
 
 
         var ctx = document.getElementById("peakHoursChart").getContext("2d");
