@@ -115,12 +115,24 @@ class MostSellerProducts:
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict(products, number)
         return products_dict
-
+    
     def most_seller_products_today(self, number=None):
-        if number == None:
-            number = self.number
         filtered_products = Product.objects.filter(
             orderitem__order__create_time__date=DateVars.current_date
+        )
+        products = self.count_quantity(filtered_products)
+        products_dict = self.to_dict(products, number)
+        return products_dict
+
+    def most_seller_products_custom(self, date1=None, date2=None, number=None):
+        if number == None:
+            number = self.number
+        if not date1 and not date2:
+            date1 = DateVars.current_date
+            date2 = DateVars.current_date
+
+        filtered_products = Product.objects.filter(
+            orderitem__order__create_time__date__range=(date1,date2)
         )
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict(products, number)
@@ -559,12 +571,23 @@ class MostSellerCategories:
 
 
 class SalesDashboardVars:
-    def __call__(self):
+    def __call__(self, request):
         most_seller: MostSellerProducts = MostSellerProducts(3)
         most_seller_all: dict = most_seller.most_seller_products_all()
         most_seller_year: dict = most_seller.most_seller_products_year()
         most_seller_month: dict = most_seller.most_seller_products_month()
         most_seller_week: dict = most_seller.most_seller_products_week()
+        most_seller_today: dict = most_seller.most_seller_products_today()
+
+
+        most_seller_custom: dict = most_seller.most_seller_products_custom
+        most_seller_custom = get_date_from_staff(
+            request,
+            most_seller_custom,
+            "most_seller_date1",
+            "most_seller_date2",
+        )
+
 
         most_seller_morning: dict = most_seller.most_seller_products_morning()
         most_seller_noon: dict = most_seller.most_seller_products_noon()
@@ -601,6 +624,8 @@ class SalesDashboardVars:
             most_seller_year,
             most_seller_month,
             most_seller_week,
+            most_seller_today,
+            most_seller_custom,
         ]
 
         compare_orders_title: List[str] = [
@@ -618,10 +643,12 @@ class SalesDashboardVars:
         ]
 
         most_seller_products_title: List[str] = [
-            "Top Selling Products of all time",
-            "Top Selling Products of the year",
-            "Top Selling Products of the month",
-            "Top Selling Products of the week",
+            "Top Selling Products Of All Time",
+            "Top Selling Products Of the Year",
+            "Top Selling Products Of the Month",
+            "Top Selling Products Of the Week",
+            "Top Selling Products Of the Today",
+            "Top Selling Products Of Custom Date",  
         ]
 
         compare_orders_with_titles: Iterable = zip(
@@ -691,7 +718,6 @@ class DashboardVars:
             "best_categories_date2",
             number=5,
         )
-        print(best_categories_custom)
 
         best_customers = BestCustomer()
         best_customers_all = best_customers.best_customers_all(5)
@@ -707,8 +733,6 @@ class DashboardVars:
             "best_customers_date2",
             number=5,
         )
-
-        print(best_customers_custom)
 
 
         customers_count = best_customers.count_customers()

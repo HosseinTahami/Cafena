@@ -116,7 +116,7 @@ class DashboardView(View):
 class SalesDashboardView(View):
     def get(self, request):
         context_instance = SalesDashboardVars()
-        context = context_instance()
+        context = context_instance(request)
         return render(request, "accounts/sales_dashboard.html", context=context)
 
 
