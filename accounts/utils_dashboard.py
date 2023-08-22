@@ -252,6 +252,19 @@ class OrdersManager:
             {"accepted": accepted, "pending": pending, "rejected": rejected}
         )
 
+    def get_personnel_count(self):
+        personnels_count = self.paid_orders.values("personnel").annotate(personnel_count=Count("id"))
+        
+        each_personnel = {}
+        for item in personnels_count:
+            print(item)
+            if each_personnel.get(list(item.values())[0]):
+                each_personnel[list(item.values())[0]] += list(item.values())[1]
+            else:
+                each_personnel[list(item.values())[0]] = list(item.values())[1]
+        print(each_personnel)            
+
+
     def orders_with_costs(self, number, orders=None):
         total_price = []
         if not orders:
@@ -579,6 +592,7 @@ class DashboardVars:
         each_hour = orders.get_peak_business_hours()
         orders_count_by_status = orders.get_count_by_status()
         personnels_count = Personnel.objects.all().count()
+        orders.get_personnel_count()
 
         categories = MostSellerCategories()
         best_categories_all = categories.most_seller_categories_all(5)
