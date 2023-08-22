@@ -219,13 +219,21 @@ class OrdersManager:
         today_orders = self.paid_orders.filter(create_time__date=DateVars.current_date)
         return today_orders
 
-    def get_peak_business_hours(self):
-        hours = (
-            self.paid_orders.filter(create_time__date=DateVars.current_date)
-            .annotate(hour=ExtractHour("create_time"))
-            .values("hour")
-            .annotate(order_count=Count("id"))
-        )
+    def get_peak_business_hours(self, date1=None, date2=None):
+        if date1 is None or date2 is None:
+            hours = (
+                self.paid_orders.filter(create_time__date=DateVars.current_date)
+                .annotate(hour=ExtractHour("create_time"))
+                .values("hour")
+                .annotate(order_count=Count("id"))
+            )
+        else:
+            hours = (
+                self.paid_orders.filter(create_time__date__range=(date1, date2))
+                .annotate(hour=ExtractHour("create_time"))
+                .values("hour")
+                .annotate(order_count=Count("id"))
+            )
         each_hour = {}
         for hour in hours:
             if each_hour.get(list(hour.values())[0]):
