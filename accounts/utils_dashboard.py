@@ -248,14 +248,16 @@ class OrdersManager:
         return json.dumps(each_hour)
 
     def get_count_by_status(self):
-        counts_by_status = Order.objects.filter(create_time__date=DateVars.current_date).aggregate(
-        accepted=Count(Case(When(status="a", then=1), output_field=IntegerField())),
-        pending=Count(Case(When(status="p", then=1), output_field=IntegerField())),
-        rejected=Count(Case(When(status="r", then=1), output_field=IntegerField()))
-    )
-        accepted = counts_by_status['accepted']
-        pending = counts_by_status['pending']
-        rejected = counts_by_status['rejected']
+        counts_by_status = Order.objects.filter(
+            create_time__date=DateVars.current_date
+        ).aggregate(
+            accepted=Count(Case(When(status="a", then=1), output_field=IntegerField())),
+            pending=Count(Case(When(status="p", then=1), output_field=IntegerField())),
+            rejected=Count(Case(When(status="r", then=1), output_field=IntegerField())),
+        )
+        accepted = counts_by_status["accepted"]
+        pending = counts_by_status["pending"]
+        rejected = counts_by_status["rejected"]
         return json.dumps(
             {"accepted": accepted, "pending": pending, "rejected": rejected}
         )
