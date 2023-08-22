@@ -16,8 +16,6 @@ def get_date_from_staff(request, query, *args):
 
     date1_ = request.GET.get(args[0])
     date2_ = request.GET.get(args[1])
-    # print(date1_,date2_)
-    # print(type(date1_),type(date2_))
 
     try:
         hour1_ = request.GET.get(args[2])
@@ -143,6 +141,8 @@ class MostSellerProducts:
         )
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict(products, number)
+        print("-"*90)
+        print(products_dict)
         return products_dict
 
     def most_seller_products_morning(self, number=None):
@@ -175,7 +175,7 @@ class MostSellerProducts:
         products_dict = self.to_dict_count(products, number)
         return self.to_json(products_dict)
 
-    def most_seller_products_custom(
+    def most_seller_products_custom_by_hour(
         self, date1=None, date2=None, hour1=None, hour2=None, number=None
     ):
         if number == None:
@@ -632,10 +632,10 @@ class SalesDashboardVars:
         most_seller_week: dict = most_seller.most_seller_products_week()
         most_seller_today: dict = most_seller.most_seller_products_today()
 
-        most_seller_custom: dict = most_seller.most_seller_products_custom
-        most_seller_custom = get_date_from_staff(
+        most_seller_products_custom: dict = most_seller.most_seller_products_custom
+        most_seller_products_custom = get_date_from_staff(
             request,
-            most_seller_custom,
+            most_seller_products_custom,
             "most_seller_date1",
             "most_seller_date2",
         )
@@ -643,10 +643,10 @@ class SalesDashboardVars:
         most_seller_morning: dict = most_seller.most_seller_products_morning()
         most_seller_noon: dict = most_seller.most_seller_products_noon()
         most_seller_night: dict = most_seller.most_seller_products_night()
-        most_seller_products_custom = most_seller.most_seller_products_custom
-        most_seller_products_custom = get_date_from_staff(
+        most_seller_products_custom_by_hour = most_seller.most_seller_products_custom_by_hour
+        most_seller_products_custom_by_hour = get_date_from_staff(
             request,
-            most_seller_products_custom,
+            most_seller_products_custom_by_hour,
             "most_seller_products_custom_date1",
             "most_seller_products_custom_date2",
             "most_seller_products_custom_hour1",
@@ -685,7 +685,7 @@ class SalesDashboardVars:
             most_seller_month,
             most_seller_week,
             most_seller_today,
-            most_seller_custom,
+            most_seller_products_custom,
         ]
 
         compare_orders_title: List[str] = [
@@ -727,6 +727,7 @@ class SalesDashboardVars:
             "most_seller_morning": most_seller_morning,
             "most_seller_noon": most_seller_noon,
             "most_seller_night": most_seller_night,
+            "most_seller_products_custom_by_hour":most_seller_products_custom_by_hour,
             "compare_customers_with_titles": compare_customers_with_titles,
             "most_seller_products_custom": most_seller_products_custom,
         }

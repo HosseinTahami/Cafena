@@ -289,7 +289,7 @@ var ctx = document.getElementById('mostSellerProductsNightChart').getContext('2d
 // -----------------------------------------------------------------------------
 
 var ctx = document.getElementById('mostSellerProductsCustomChart').getContext('2d');
-    var mostSellerProductssCustomData = JSON.parse('{{most_seller_products_custom|safe }}');
+    var mostSellerProductssCustomData = JSON.parse('{{most_seller_products_custom_by_hour|safe }}');
     console.log(mostSellerProductssCustomData)
     var labels = Object.keys(mostSellerProductssCustomData);
     var values = Object.values(mostSellerProductssCustomData);
