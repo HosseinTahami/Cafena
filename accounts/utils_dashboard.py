@@ -10,6 +10,13 @@ import json
 from typing import List, Iterable
 import pytz
 
+def get_date_from_staff(request, query, date1, date2):
+    result = query
+    date1_ = request.GET.get(date1)
+    date2_ = request.GET.get(date2)
+    if date1 and date2:
+        result = query(date1_, date2_)
+    return result
 
 class DateVars:
     current_date: datetime = datetime.datetime.now(
@@ -234,6 +241,7 @@ class OrdersManager:
                 .values("hour")
                 .annotate(order_count=Count("id"))
             )
+
         each_hour = {}
         for hour in hours:
             if each_hour.get(list(hour.values())[0]):
@@ -613,15 +621,19 @@ class SalesDashboardVars:
 
 
 class DashboardVars:
-    def __call__(self):
+    def __call__(self, request):
         orders = OrdersManager()
         orders_with_costs = orders.orders_with_costs(10)
         orders_count = orders.count_orders()
         total_sales = orders.total_sales()
-        each_hour = orders.get_peak_business_hours()
         orders_count_by_status = orders.get_count_by_status()
         personnels_count = Personnel.objects.all().count()
-        orders.get_personnel_count()
+
+        each_hour = orders.get_peak_business_hours
+        each_hour = get_date_from_staff(request, each_hour, "peak_bussiness_hours_date1", "peak_bussiness_hours_date2")
+
+        each_personnel_count = orders.get_personnel_count_by_date
+        each_personnel_count = get_date_from_staff(request, each_personnel_count, "orders_personnel_date1", "orders_personnel_date2")
 
         categories = MostSellerCategories()
         best_categories_all = categories.most_seller_categories_all(5)
@@ -676,8 +688,12 @@ class DashboardVars:
             "total_sales": total_sales,
             "orders_with_costs": orders_with_costs,
             "each_hour": each_hour,
+            "each_personnel_count": each_personnel_count,
             "orders_count_by_status": orders_count_by_status,
             "general_data_with_title": general_data_with_title,
         }
 
         return context
+
+
+
