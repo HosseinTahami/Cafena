@@ -1,4 +1,5 @@
-from django.db.models import Sum
+from django.db.models import Sum, Count, Case, When, IntegerField
+from django.db.models.functions import ExtractHour
 
 from cafe.models import Product, Category
 from accounts.models import Customer, Personnel
@@ -7,12 +8,15 @@ from orders.models import Order
 import datetime
 import json
 from typing import List, Iterable
+import pytz
 
 
 class DateVars:
-    current_date: datetime = datetime.datetime.now().date()
-    last_date: datetime = datetime.datetime.now().date() - datetime.timedelta(days=1)
-    current_datetime: datetime = datetime.datetime.now()
+    current_date: datetime = datetime.datetime.now(
+        tz=pytz.timezone("Asia/Tehran")
+    ).date()
+    last_date: datetime = current_date - datetime.timedelta(days=1)
+    current_datetime: datetime = datetime.datetime.now(tz=pytz.timezone("Asia/Tehran"))
 
     @classmethod
     def get_current_year(cls):
@@ -178,8 +182,16 @@ class MostSellerProducts:
 
 class OrdersManager:
     def __init__(self):
-        self.orders = Order.objects.all().order_by("-create_time")
-        self.paid_orders = Order.objects.filter(paid=True).order_by("-create_time")
+        self.orders = (
+            Order.objects.prefetch_related("orderitem_set")
+            .all()
+            .order_by("-create_time")
+        )
+        self.paid_orders = (
+            Order.objects.prefetch_related("orderitem_set")
+            .filter(paid=True)
+            .order_by("-create_time")
+        )
 
     def this_year_orders(self):
         this_year_orders = self.paid_orders.filter(
@@ -194,46 +206,48 @@ class OrdersManager:
         return this_month_orders
 
     def this_week_orders(self):
-        this_week_orders = self.paid_orders.objects.filter(
+        this_week_orders = self.paid_orders.filter(
             create_time__date__gte=DateVars.get_first_day_current_week()
         )
         return this_week_orders
 
     def yesterday_orders(self):
-        yesterday_orders = self.paid_orders.objects.filter(
-            create_time__date=DateVars.last_date
-        )
+        yesterday_orders = self.paid_orders.filter(create_time__date=DateVars.last_date)
         return yesterday_orders
 
     def today_orders(self):
-        today_orders = self.paid_orders.objects.filter(
-            create_time__date=DateVars.current_date
-        )
+        today_orders = self.paid_orders.filter(create_time__date=DateVars.current_date)
         return today_orders
 
-    def get_every_hour_orders(self, hour):
-        first_hour = DateVars.current_datetime.replace(hour=hour, minute=0, second=0)
-        next_hour = hour + 1
-        if hour == 23:
-            next_hour = 0
-        second_hour = DateVars.current_datetime.replace(
-            hour=next_hour, minute=0, second=0
+    def get_peak_business_hours(self):
+        hours = (
+            self.paid_orders.filter(create_time__date=DateVars.current_date)
+            .annotate(hour=ExtractHour("create_time"))
+            .values("hour")
+            .annotate(order_count=Count("id"))
         )
-        every_hour_orders_count = self.paid_orders.filter(
-            create_time__range=(first_hour, second_hour)
-        ).count()
-        return every_hour_orders_count
-
-    def get_peak_business_hours(self, hour1, hour2):
         each_hour = {}
-        for hour in range(hour1, hour2):
-            each_hour[f"{hour}-{hour+1}"] = self.get_every_hour_orders(hour)
+        for hour in hours:
+            if each_hour.get(list(hour.values())[0]):
+                each_hour[list(hour.values())[0]] += list(hour.values())[1]
+            else:
+                each_hour[list(hour.values())[0]] = list(hour.values())[1]
+
+        for _ in range(7, 24):
+            if not each_hour.get(_):
+                each_hour[_] = 0
+
         return json.dumps(each_hour)
 
     def get_count_by_status(self):
-        accepted = Order.objects.filter(status="a").count()
-        pending = Order.objects.filter(status="p").count()
-        rejected = Order.objects.filter(status="r").count()
+        counts_by_status = Order.objects.filter(create_time__date=DateVars.current_date).aggregate(
+        accepted=Count(Case(When(status="a", then=1), output_field=IntegerField())),
+        pending=Count(Case(When(status="p", then=1), output_field=IntegerField())),
+        rejected=Count(Case(When(status="r", then=1), output_field=IntegerField()))
+    )
+        accepted = counts_by_status['accepted']
+        pending = counts_by_status['pending']
+        rejected = counts_by_status['rejected']
         return json.dumps(
             {"accepted": accepted, "pending": pending, "rejected": rejected}
         )
@@ -241,10 +255,10 @@ class OrdersManager:
     def orders_with_costs(self, number, orders=None):
         total_price = []
         if not orders:
-            orders = self.orders
+            orders = self.paid_orders.select_related("customer")
         for order in orders:
             total_price.append(order.get_total_price())
-        orders_with_costs = zip(self.orders[:number], total_price[:number])
+        orders_with_costs = zip(orders[:number], total_price[:number])
         return orders_with_costs
 
     def total_sales(self):
@@ -255,25 +269,32 @@ class OrdersManager:
 
 
 class BestCustomer:
+    def __init__(self) -> None:
+        self.orders = (
+            Order.objects.select_related("customer")
+            .prefetch_related("orderitem_set")
+            .all()
+        )
+
     def best_customers_all(self, number):
-        orders = Order.objects.all()
+        orders = self.orders
         best_customers_all = {}
         return self.add_best_customer(orders, best_customers_all, number)
 
     def best_customers_year(self, number):
-        orders = Order.objects.filter(create_time__year=DateVars.get_current_year())
+        orders = self.orders.filter(create_time__year=DateVars.get_current_year())
         best_customers_year = {}
         return self.add_best_customer(orders, best_customers_year, number)
 
     def best_customers_month(self, number):
-        orders = Order.objects.filter(
+        orders = self.orders.filter(
             create_time__date__gte=DateVars.get_first_day_current_month()
         )
         best_customers_month = {}
         return self.add_best_customer(orders, best_customers_month, number)
 
     def best_customers_week(self, number):
-        orders = Order.objects.filter(
+        orders = self.orders.filter(
             create_time__date__gte=DateVars.get_first_day_current_week()
         )
         best_customers_month = {}
@@ -308,18 +329,17 @@ class Comparison:
         }
 
 
-class ComparisonOrders(Comparison):
+class ComparisonOrders(Comparison, OrdersManager):
     def __init__(self):
         self.orders = Order.objects.all().order_by("-create_time")
         self.paid_orders = Order.objects.filter(paid=True).order_by("-create_time")
 
     def compare_order_daily(self):
-        current_date_orders_count = self.paid_orders.filter(
-            create_time__date=DateVars.current_date
-        ).count()
         last_date_orders_count = self.paid_orders.filter(
             create_time__date=DateVars.last_date
         ).count()
+        current_date_orders_count = self.today_orders().count()
+
         return self.return_dictionary(current_date_orders_count, last_date_orders_count)
 
     def compare_order_weekly(self):
@@ -329,12 +349,7 @@ class ComparisonOrders(Comparison):
                 DateVars.get_last_day_last_week(),
             )
         ).count()
-        current_week_orders_count = self.paid_orders.filter(
-            create_time__range=(
-                DateVars.get_first_day_current_week(),
-                DateVars.current_date,
-            )
-        ).count()
+        current_week_orders_count = self.this_week_orders().count()
 
         return self.return_dictionary(current_week_orders_count, last_week_orders_count)
 
@@ -345,12 +360,7 @@ class ComparisonOrders(Comparison):
                 DateVars.get_last_day_last_month(),
             )
         ).count()
-        current_month_orders_count = self.paid_orders.filter(
-            create_time__range=(
-                DateVars.get_first_day_current_month(),
-                DateVars.current_date,
-            )
-        ).count()
+        current_month_orders_count = self.this_month_orders().count()
         return self.return_dictionary(
             current_month_orders_count, last_month_orders_count
         )
@@ -359,9 +369,7 @@ class ComparisonOrders(Comparison):
         last_year_orders_count = self.paid_orders.filter(
             create_time__year=DateVars.get_last_year()
         ).count()
-        current_year_orders_count = self.paid_orders.filter(
-            create_time__year=DateVars.get_current_year()
-        ).count()
+        current_year_orders_count = self.this_year_orders().count()
         return self.return_dictionary(current_year_orders_count, last_year_orders_count)
 
 
@@ -568,7 +576,7 @@ class DashboardVars:
         orders_with_costs = orders.orders_with_costs(10)
         orders_count = orders.count_orders()
         total_sales = orders.total_sales()
-        each_hour = orders.get_peak_business_hours(8, 24)
+        each_hour = orders.get_peak_business_hours()
         orders_count_by_status = orders.get_count_by_status()
         personnels_count = Personnel.objects.all().count()
 
