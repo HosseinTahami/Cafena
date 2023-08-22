@@ -11,17 +11,24 @@ from typing import List, Iterable
 import pytz
 
 
-def get_date_from_staff(request, query, date1, date2, number=None):
-    if number:
-        result = query(number)
-    else:
-        result = query()
+def get_date_from_staff(request, query, *args):
+    result = query()
 
-    date1_ = request.GET.get(date1)
-    date2_ = request.GET.get(date2)
-    if date1 and date2 and number:
-        result = query(number, date1_, date2_)
-    elif date1 and date2:
+    date1_ = request.GET.get(args[0])
+    date2_ = request.GET.get(args[1])
+    # print(date1_,date2_)
+    # print(type(date1_),type(date2_))
+
+    try:
+        hour1_ = request.GET.get(args[2])
+        hour2_ = request.GET.get(args[3])
+    except:
+        hour1_ = None
+        hour2_ = None
+
+    if date1_ and date2_ and hour1_ and hour2_:
+        result = query(date1_, date2_, hour1_, hour2_)
+    elif date1_ and date2_:
         result = query(date1_, date2_)
     return result
 
@@ -115,7 +122,7 @@ class MostSellerProducts:
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict(products, number)
         return products_dict
-    
+
     def most_seller_products_today(self, number=None):
         filtered_products = Product.objects.filter(
             orderitem__order__create_time__date=DateVars.current_date
@@ -132,7 +139,7 @@ class MostSellerProducts:
             date2 = DateVars.current_date
 
         filtered_products = Product.objects.filter(
-            orderitem__order__create_time__date__range=(date1,date2)
+            orderitem__order__create_time__date__range=(date1, date2)
         )
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict(products, number)
@@ -164,6 +171,25 @@ class MostSellerProducts:
         filtered_products = Product.objects.filter(
             orderitem__order__create_time__hour__range=(18, 23)
         )
+        products = self.count_quantity(filtered_products)
+        products_dict = self.to_dict_count(products, number)
+        return self.to_json(products_dict)
+
+    def most_seller_products_custom(
+        self, date1=None, date2=None, hour1=None, hour2=None, number=None
+    ):
+        if number == None:
+            number = self.number
+
+        if not hour1 and not hour2 and not date1 and not date2:
+            date1 = DateVars.current_date
+            date2 = DateVars.current_date
+            hour1 = 8
+            hour2 = 23
+
+        filtered_products = Product.objects.filter(
+            orderitem__order__create_time__date__range=(date1, date2)
+        ).filter(orderitem__order__create_time__hour__range=(hour1, hour2))
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict_count(products, number)
         return self.to_json(products_dict)
@@ -343,36 +369,50 @@ class OrdersManager:
 
 
 class BestCustomer:
-    def __init__(self) -> None:
+    def __init__(self, number) -> None:
         self.orders = (
             Order.objects.select_related("customer")
             .prefetch_related("orderitem_set")
             .all()
         )
+        self.number = number
 
-    def best_customers_custom(self, number, date1=None, date2=None):
+    def best_customers_custom(self, number=None, date1=None, date2=None):
+        if number == None:
+            number = self.number
         orders = self.orders.filter(create_time__date__range=(date1, date2))
         best_customers_custom = {}
         return self.add_best_customer(orders, best_customers_custom, number)
 
-    def best_customers_all(self, number):
+    def best_customers_all(self, number=None):
+        if number == None:
+            number = self.number
         orders = self.orders
         best_customers_all = {}
         return self.add_best_customer(orders, best_customers_all, number)
 
-    def best_customers_year(self, number):
+    def best_customers_year(self, number=None):
+        if number == None:
+            number = self.number
+
         orders = self.orders.filter(create_time__year=DateVars.get_current_year())
         best_customers_year = {}
         return self.add_best_customer(orders, best_customers_year, number)
 
-    def best_customers_month(self, number):
+    def best_customers_month(self, number=None):
+        if number == None:
+            number = self.number
+
         orders = self.orders.filter(
             create_time__date__gte=DateVars.get_first_day_current_month()
         )
         best_customers_month = {}
         return self.add_best_customer(orders, best_customers_month, number)
 
-    def best_customers_week(self, number):
+    def best_customers_week(self, number=None):
+        if number == None:
+            number = self.number
+
         orders = self.orders.filter(
             create_time__date__gte=DateVars.get_first_day_current_week()
         )
@@ -515,41 +555,54 @@ class ComparisonCustomers(Comparison):
 
 
 class MostSellerCategories:
-    def most_seller_categories_all(self, number):
+    def __init__(self, number):
+        self.number = number
+
+    def most_seller_categories_all(self, number=None):
+        if number == None:
+            number = self.number
+
         filtered_categories = Category.objects.all()
         return self.count_quantity(filtered_categories, number)
 
-    def most_seller_categories_year(self, number):
+    def most_seller_categories_year(self, number=None):
+        if number == None:
+            number = self.number
+
         filtered_categories = Category.objects.filter(
             product__orderitem__order__create_time__year=DateVars.get_current_year()
         )
         return self.count_quantity(filtered_categories, number)
 
-    def most_seller_categories_month(self, number):
+    def most_seller_categories_month(self, number=None):
+        if number == None:
+            number = self.number
+
         filtered_categories = Category.objects.filter(
             product__orderitem__order__create_time__date__gte=DateVars.get_first_day_current_month()
         )
         return self.count_quantity(filtered_categories, number)
 
-    def most_seller_categories_week(self, number):
+    def most_seller_categories_week(self, number=None):
+        if number == None:
+            number = self.number
+
         filtered_categories = Category.objects.filter(
             product__orderitem__order__create_time__date__gte=DateVars.get_first_day_current_week()
         )
         return self.count_quantity(filtered_categories, number)
 
-    def most_seller_categories_custom(self, number, date1=None, date2=None):
+    def most_seller_categories_custom(self, number=None, date1=None, date2=None):
+        if number == None:
+            number = self.number
+
         if not date1 and not date2:
             date1 = DateVars.current_date
             date2 = DateVars.current_date
 
-        print(date1)
-        print(date2)
-
         filtered_categories = Category.objects.filter(
             product__orderitem__order__create_time__date__range=(date1, date2)
         )
-        print(filtered_categories)
-        print(self.count_quantity(filtered_categories, number))
         return self.count_quantity(filtered_categories, number)
 
     def count_quantity(self, filtered_categories, number):
@@ -579,7 +632,6 @@ class SalesDashboardVars:
         most_seller_week: dict = most_seller.most_seller_products_week()
         most_seller_today: dict = most_seller.most_seller_products_today()
 
-
         most_seller_custom: dict = most_seller.most_seller_products_custom
         most_seller_custom = get_date_from_staff(
             request,
@@ -588,10 +640,18 @@ class SalesDashboardVars:
             "most_seller_date2",
         )
 
-
         most_seller_morning: dict = most_seller.most_seller_products_morning()
         most_seller_noon: dict = most_seller.most_seller_products_noon()
         most_seller_night: dict = most_seller.most_seller_products_night()
+        most_seller_products_custom = most_seller.most_seller_products_custom
+        most_seller_products_custom = get_date_from_staff(
+            request,
+            most_seller_products_custom,
+            "most_seller_products_custom_date1",
+            "most_seller_products_custom_date2",
+            "most_seller_products_custom_hour1",
+            "most_seller_products_custom_hour2",
+        )
 
         compare_orders: ComparisonOrders = ComparisonOrders()
         compare_orders_annual: dict = compare_orders.compare_order_annual()
@@ -648,7 +708,7 @@ class SalesDashboardVars:
             "Top Selling Products Of the Month",
             "Top Selling Products Of the Week",
             "Top Selling Products Of the Today",
-            "Top Selling Products Of Custom Date",  
+            "Top Selling Products Of Custom Date",
         ]
 
         compare_orders_with_titles: Iterable = zip(
@@ -668,6 +728,7 @@ class SalesDashboardVars:
             "most_seller_noon": most_seller_noon,
             "most_seller_night": most_seller_night,
             "compare_customers_with_titles": compare_customers_with_titles,
+            "most_seller_products_custom": most_seller_products_custom,
         }
 
         return context
@@ -704,11 +765,11 @@ class DashboardVars:
             "orders_personnel_date2",
         )
 
-        categories = MostSellerCategories()
-        best_categories_all = categories.most_seller_categories_all(5)
-        best_categories_year = categories.most_seller_categories_year(5)
-        best_categories_month = categories.most_seller_categories_month(5)
-        best_categories_week = categories.most_seller_categories_week(5)
+        categories = MostSellerCategories(5)
+        best_categories_all = categories.most_seller_categories_all()
+        best_categories_year = categories.most_seller_categories_year()
+        best_categories_month = categories.most_seller_categories_month()
+        best_categories_week = categories.most_seller_categories_week()
 
         best_categories_custom = categories.most_seller_categories_custom
         best_categories_custom = get_date_from_staff(
@@ -716,14 +777,13 @@ class DashboardVars:
             best_categories_custom,
             "best_categories_date1",
             "best_categories_date2",
-            number=5,
         )
 
-        best_customers = BestCustomer()
-        best_customers_all = best_customers.best_customers_all(5)
-        best_customers_year = best_customers.best_customers_year(5)
-        best_customers_month = best_customers.best_customers_month(5)
-        best_customers_week = best_customers.best_customers_week(5)
+        best_customers = BestCustomer(5)
+        best_customers_all = best_customers.best_customers_all()
+        best_customers_year = best_customers.best_customers_year()
+        best_customers_month = best_customers.best_customers_month()
+        best_customers_week = best_customers.best_customers_week()
 
         best_customers_custom = best_customers.best_customers_custom
         best_customers_custom = get_date_from_staff(
@@ -731,9 +791,7 @@ class DashboardVars:
             best_customers_custom,
             "best_customers_date1",
             "best_customers_date2",
-            number=5,
         )
-
 
         customers_count = best_customers.count_customers()
         best_customers_list = [
