@@ -260,18 +260,37 @@ class OrdersManager:
             {"accepted": accepted, "pending": pending, "rejected": rejected}
         )
 
-    def get_personnel_count(self):
-        personnels_count = self.paid_orders.values("personnel").annotate(personnel_count=Count("id"))
-        
+    def get_personnel_count_by_date(self, date1=None, date2=None):
+        if date1 is None or date2 is None:
+            personnels_count = (
+                self.orders.filter(status="a")
+                .values("personnel", "personnel__full_name")
+                .annotate(personnel_count=Count("id"))
+            )
+        else:
+            personnels_count = (
+                self.orders.filter(status="a")
+                .filter(create_time__date__range=(date1, date2))
+                .values("personnel", "personnel__full_name")
+                .annotate(personnel_count=Count("id"))
+            )
+        return self.get_personnel_count(personnels_count)
+
+    def get_personnel_count(self, personnels_count):
         each_personnel = {}
         for item in personnels_count:
-            print(item)
-            if each_personnel.get(list(item.values())[0]):
-                each_personnel[list(item.values())[0]] += list(item.values())[1]
-            else:
-                each_personnel[list(item.values())[0]] = list(item.values())[1]
-        print(each_personnel)            
-
+            if item["personnel"] is not None:
+                if each_personnel.get(
+                    f"{list(item.values())[0]}-{list(item.values())[1]}"
+                ):
+                    each_personnel[
+                        f"{list(item.values())[0]}-{list(item.values())[1]}"
+                    ] += list(item.values())[2]
+                else:
+                    each_personnel[
+                        f"{list(item.values())[0]}-{list(item.values())[1]}"
+                    ] = list(item.values())[2]
+        return json.dumps(each_personnel)
 
     def orders_with_costs(self, number, orders=None):
         total_price = []
