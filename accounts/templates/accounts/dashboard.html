@@ -105,8 +105,11 @@
                                                         </td>
                                                         <td><a href="{% url 'accounts:order_detail' order.pk %}" class="btn btn-primary"> details </a></td>
                                                         {% if order.status == 'p' %}
-                                                        <td><a href="{% url 'orders:order_accept' order.pk %}" class="btn btn-success">accept</a></td>
-                                                        <td><a href="{% url 'orders:order_reject' order.pk %}" class="btn btn-danger">reject</a></td>
+                                                            <td><a href="{% url 'orders:order_accept' order.pk %}" class="btn btn-success">accept</a></td>
+                                                            <td><a href="{% url 'orders:order_reject' order.pk %}" class="btn btn-danger">reject</a></td>
+                                                        {% else %}
+                                                            <td></td>
+                                                            <td></td>
                                                         {% endif %}
                                                     </tr>
                                                     {% endfor %}
@@ -123,6 +126,7 @@
                             <!-- ============================================================== -->
                             <!-- end recent orders  -->
 
+
                             <!-- ============================================================== -->
                             <!-- product category  -->
                             <!-- ============================================================== -->
@@ -137,7 +141,7 @@
                             </div>
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="card">
-                                    <h5 class="card-header"> Most sold categories of the year</h5>
+                                    <h5 class="card-header"> Most sold categories of year</h5>
                                     <div class="card-body">
                                         <canvas id="bestCategoriesChartYear" width="400" height="200"></canvas>
                                     </div>
@@ -145,7 +149,7 @@
                             </div>
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="card">
-                                    <h5 class="card-header"> Most sold categories of the month</h5>
+                                    <h5 class="card-header"> Most sold categories of month</h5>
                                     <div class="card-body">
                                         <canvas id="bestCategoriesChartMonth" width="400" height="200"></canvas>
                                     </div>
@@ -153,7 +157,7 @@
                             </div>
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="card">
-                                    <h5 class="card-header"> Most sold categories of the week</h5>
+                                    <h5 class="card-header"> Most sold categories of week</h5>
                                     <div class="card-body">
                                         <canvas id="bestCategoriesChartWeek"></canvas>
                                     </div>
@@ -172,8 +176,8 @@
                             <!-- ============================================================== -->
                             <div class="row">
                                 {% for customers, title in best_customers_with_title %}
-                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                    <div class="card">
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
+                                    <div class="card flex-fill">
                                         <h5 class="card-header">{{ title }}</h5>
                                         <div class="card-body p-0">
                                             <div class="table-responsive">
@@ -204,9 +208,90 @@
                                    <!-- End Best customers  -->
                             <!-- ============================================================== -->
                             
-                            <div class="row align-content-stretch">
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                                <div class="card">
+                            <!-- ============================================================== -->
+                                   <!-- Start Custom Customer&Category and get count personnel  -->
+                            <!-- ============================================================== -->
+
+
+                            <div class="row align-items-stretch">
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
+                                    <div class="card flex-fill">
+                                        <h5 class="card-header">Best customers custom
+                                            <form action="" method="get">
+                                                <label for="date1">From:</label>
+                                                <input type="date" id="date1" name="best_customers_date1" required>
+                                                <label for="date2">To:</label>
+                                                <input type="date" id="date2" name="best_customers_date2" required>
+                                                <input type="submit" value="Submit">
+                                            </form>
+                                        </h5>
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead class="bg-light">
+                                                        <tr class="border-0">
+                                                            <th class="border-0">Phone Number</th>
+                                                            <th class="border-0">Buy</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for customer in best_customers_custom %}
+                                                        <tr>
+                                                            <td>{{ customer.0 }} </td>
+                                                            <td>{{ customer.1 }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
+                                    <div class="card flex-fill">
+                                        <h5 class="card-header"> Most sold categories Custom
+                                            <form action="" method="get">
+                                                <label for="date1">From:</label>
+                                                <input type="date" id="date1" name="best_categories_date1" required>
+                                                <label for="date2">To:</label>
+                                                <input type="date" id="date2" name="best_categories_date2" required>
+                                                <input type="submit" value="Submit">
+                                            </form>
+                                        </h5>
+                                        <div class="card-body">
+                                            <canvas id="bestCategoriesChartCustom"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+        
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
+                                    <div class="card flex-fill">
+                                        <h5 class="card-header">Orders By Personnel(Default: All)
+                                        <form action="" method="get">
+                                            <label for="date1">From:</label>
+                                            <input type="date" id="date1" name="orders_personnel_date1" required>
+                                            <label for="date2">To:</label>
+                                            <input type="date" id="date2" name="orders_personnel_date2" required>
+                                            <input type="submit" value="Submit">
+                                        </form>
+          
+                                    </h5>
+                                        <div class="card-body">
+                                            <canvas id="ordersPersonnelChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+
+
+                            <!-- ============================================================== -->
+                            <!-- End Custom Customer&Category and get count personnel  -->
+                            <!-- ============================================================== -->
+                            <div class="row  mb-5">
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
+                                <div class="card flex-fill">
                                     <h5 class="card-header">Orders By Status
                                         <form action="" method="get">
                                             <label for="date1">From:</label>
@@ -222,8 +307,8 @@
                                 </div>
                             </div>
 
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                                <div class="card">
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
+                                <div class="card flex-fill">
                                     <h5 class="card-header">Business Hours(Default: Today)
                                         <form action="" method="get">
                                             <label for="date1">From:</label>
@@ -245,23 +330,10 @@
                                    <!-- End Status and Peak  -->
                             <!-- ============================================================== -->
 
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                            <div class="card">
-                                <h5 class="card-header">Orders By Personnel(Default: All)
-                                <form action="" method="get">
-                                    <label for="date1">From:</label>
-                                    <input type="date" id="date1" name="orders_personnel_date1" required>
-                                    <label for="date2">To:</label>
-                                    <input type="date" id="date2" name="orders_personnel_date2" required>
-                                    <input type="submit" value="Submit">
-                                </form>
-  
-                            </h5>
-                                <div class="card-body">
-                                    <canvas id="ordersPersonnelChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    
+                    
+                    
                     </div>
                             
                         </div>
@@ -478,6 +550,38 @@ var ctx = document.getElementById("bestCategoriesChartWeek").getContext("2d");
         });
 
 // --------------------------------------------------------------------------------
+
+var ctx = document.getElementById("bestCategoriesChartCustom").getContext("2d");
+        var bestCategoriesCustom = JSON.parse('{{ best_categories_custom|safe }}');
+        var labels = Object.keys(bestCategoriesCustom);
+        var data = Object.values(bestCategoriesCustom);
+        var chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: "best categories custom",
+                    data: data,
+                    backgroundColor: '#0d0d28',
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        var bestCategoriesCustomChart = new Chart(ctx, {
+            type: "bar",
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+// --------------------------------------------------------------------------------
+
 
     var ctx = document.getElementById('ordersStatusChart').getContext('2d');
     var ordersStatusData = JSON.parse('{{ orders_count_by_status|safe }}');

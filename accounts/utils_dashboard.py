@@ -11,11 +11,17 @@ from typing import List, Iterable
 import pytz
 
 
-def get_date_from_staff(request, query, date1, date2):
-    result = query
+def get_date_from_staff(request, query, date1, date2, number=None):
+    if number:
+        result = query(number)
+    else:
+        result = query()
+
     date1_ = request.GET.get(date1)
     date2_ = request.GET.get(date2)
-    if date1 and date2:
+    if date1 and date2 and number:
+        result = query(number, date1_, date2_)
+    elif date1 and date2:
         result = query(date1_, date2_)
     return result
 
@@ -332,6 +338,11 @@ class BestCustomer:
             .all()
         )
 
+    def best_customers_custom(self, number, date1=None, date2=None):
+        orders = self.orders.filter(create_time__date__range=(date1, date2))
+        best_customers_custom = {}
+        return self.add_best_customer(orders, best_customers_custom, number)
+
     def best_customers_all(self, number):
         orders = self.orders
         best_customers_all = {}
@@ -514,10 +525,19 @@ class MostSellerCategories:
         )
         return self.count_quantity(filtered_categories, number)
 
-    def most_seller_categories_today(self, number):
+    def most_seller_categories_custom(self, number, date1=None, date2=None):
+        if not date1 and not date2:
+            date1 = DateVars.current_date
+            date2 = DateVars.current_date
+
+        print(date1)
+        print(date2)
+
         filtered_categories = Category.objects.filter(
-            product__orderitem__order__create_time__date=DateVars.current_date
+            product__orderitem__order__create_time__date__range=(date1, date2)
         )
+        print(filtered_categories)
+        print(self.count_quantity(filtered_categories, number))
         return self.count_quantity(filtered_categories, number)
 
     def count_quantity(self, filtered_categories, number):
@@ -663,11 +683,34 @@ class DashboardVars:
         best_categories_month = categories.most_seller_categories_month(5)
         best_categories_week = categories.most_seller_categories_week(5)
 
+        best_categories_custom = categories.most_seller_categories_custom
+        best_categories_custom = get_date_from_staff(
+            request,
+            best_categories_custom,
+            "best_categories_date1",
+            "best_categories_date2",
+            number=5,
+        )
+        print(best_categories_custom)
+
         best_customers = BestCustomer()
         best_customers_all = best_customers.best_customers_all(5)
         best_customers_year = best_customers.best_customers_year(5)
         best_customers_month = best_customers.best_customers_month(5)
         best_customers_week = best_customers.best_customers_week(5)
+
+        best_customers_custom = best_customers.best_customers_custom
+        best_customers_custom = get_date_from_staff(
+            request,
+            best_customers_custom,
+            "best_customers_date1",
+            "best_customers_date2",
+            number=5,
+        )
+
+        print(best_customers_custom)
+
+
         customers_count = best_customers.count_customers()
         best_customers_list = [
             best_customers_all,
@@ -713,6 +756,8 @@ class DashboardVars:
             "each_personnel_count": each_personnel_count,
             "orders_count_by_status": orders_count_by_status,
             "general_data_with_title": general_data_with_title,
+            "best_customers_custom": best_customers_custom,
+            "best_categories_custom": best_categories_custom,
         }
 
         return context
