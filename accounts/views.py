@@ -113,14 +113,14 @@ class ManageOrders(View):
 class DashboardView(View):
     def get(self, request):
         context_instance = DashboardVars()
-        context = context_instance()
+        context = context_instance(request)
         return render(request, "accounts/dashboard.html", context=context)
 
 
 class SalesDashboardView(View):
     def get(self, request):
         context_instance = SalesDashboardVars()
-        context = context_instance()
+        context = context_instance(request)
         return render(request, "accounts/sales_dashboard.html", context=context)
 
 

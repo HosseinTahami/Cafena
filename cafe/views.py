@@ -13,7 +13,7 @@ from dynamic.models import PageData
 class HomeView(View):
     def get(self, request):
         all_categories = Category.objects.all()
-        all_products = Product.objects.all()
+        all_products = Product.objects.select_related("category").all()
         form = CartAddForm()
         page_data = PageData.get_page_date("Menu_Page")
         context = {
