@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse ,resolve
-from orders.views import AddOrderView  ,CartView , CartAddView ,CartRemoveView ,OrderAccept ,OrderReject , CheckoutView
+from orders.views import AddOrderView  ,CartView ,OrderAccept ,OrderReject , CheckoutView
 
 
 class TestordersUrls(TestCase):        
@@ -17,13 +17,7 @@ class TestordersUrls(TestCase):
         self.assertEqual(resolve(url).func.view_class,CartView)
         
 
-    def test_CartAddView(self):
-        url=reverse('orders:cart_add' , args=('1',))
-        self.assertEqual(resolve(url).func.view_class,CartAddView)
 
-    def test_CartRemoveView(self):
-        url=reverse('orders:cart_remove' , args=('2',))
-        self.assertEqual(resolve(url).func.view_class,CartRemoveView)
 
     def test_OrderAccept(self):
         url=reverse('orders:order_accept' , args=('5',))
