@@ -316,6 +316,7 @@ class OrdersManager:
         accepted = counts_by_status["accepted"]
         pending = counts_by_status["pending"]
         rejected = counts_by_status["rejected"]
+
         return json.dumps(
             {"accepted": accepted, "pending": pending, "rejected": rejected}
         )

@@ -1,4 +1,6 @@
 # django imports
+from typing import Any
+from django import http
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
@@ -7,9 +9,10 @@ from django.contrib import messages
 
 # inner modules imports
 from utils import send_otp_code
-from orders.models import Order
+from orders.models import Order, OrderItem
 from .utils_dashboard import OrdersManager, SalesDashboardVars, DashboardVars
-from .forms import UserCustomerLoginForm, OTPForm
+from .forms import UserCustomerLoginForm, OTPForm, OrderItemForm
+
 
 # third party imports
 from random import randint
@@ -40,7 +43,9 @@ class UserLoginView(View):
             cd = form.cleaned_data
             phone_number = cd["phone_number"]
             code = randint(1000, 9999)
-            print(code)
+            if Personnel.objects.filter(phone_number=phone_number).exists():
+                # send_otp_code(phone_number, code)
+                print(code)
             session["phone_number"] = phone_number
             session["code"] = code
             session["created_at"] = current_datetime.isoformat()
@@ -72,7 +77,6 @@ class UserVerifyView(View):
             digit3 = cd["digit3"]
             digit4 = cd["digit4"]
             entered_code = int(digit1 + digit2 + digit3 + digit4)
-            print(entered_code)
 
             user = authenticate(
                 request,
@@ -82,7 +86,7 @@ class UserVerifyView(View):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Logged in Successfully", "success")
-                return redirect("accounts:manage_orders")
+                return redirect("accounts:dashboard")
             else:
                 messages.error(request, "The code or phone_number is wrong!", "error")
                 return redirect("accounts:verify_personnel")
@@ -121,15 +125,41 @@ class SalesDashboardView(View):
 
 
 class OrderDetailView(View):
+    form_class = OrderItemForm
+
+    def setup(self, request, *args, **kwargs):
+        print(*args)
+        print(*kwargs)
+        self.order = Order.objects.get(pk=kwargs["pk"])
+        return super().setup(request, *args, **kwargs)
+
     def get(self, request, pk):
-        order = Order.objects.get(pk=pk)
-        total_price = order.get_total_price()
+        form = self.form_class()
+        total_price = self.order.get_total_price()
+        context = {"order": self.order, "total_price": total_price, "form": form}
         return render(
             request,
             "accounts/order_detail.html",
-            {"order": order, "total_price": total_price},
+            context=context,
         )
 
+    def post(self, request, pk):
+        form = self.form_class(request.POST)
+        print(form)
+        if form.is_valid():
+            cd = form.cleaned_data
+            print(cd)
+            if OrderItem.objects.filter(order=self.order,product=cd["product"]).exists():
+                orderitem = OrderItem.objects.get(order=self.order,product=cd["product"])
+                orderitem.quantity += cd["quantity"]
+                orderitem.save()
+            else:
+                new_orderitem = form.save(commit=False)
+                new_orderitem.order = self.order
+                new_orderitem.price = new_orderitem.product.price
+                new_orderitem.save()
+
+        return redirect("accounts:order_detail", pk)
 
 class ShowAllOrders(TemplateView):
     template_name = "accounts/all_orders_table.html"
