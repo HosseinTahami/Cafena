@@ -12,6 +12,7 @@ from utils import send_otp_code
 from orders.models import Order, OrderItem
 from .utils_dashboard import OrdersManager, SalesDashboardVars, DashboardVars
 from .forms import UserCustomerLoginForm, OTPForm, OrderItemForm
+from .models import Personnel
 
 
 # third party imports
