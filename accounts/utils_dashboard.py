@@ -7,7 +7,7 @@ from orders.models import Order
 
 import datetime
 import json
-from typing import List, Iterable
+from typing import Any, List, Iterable
 import pytz
 
 
@@ -141,7 +141,7 @@ class MostSellerProducts:
         )
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict(products, number)
-        print("-"*90)
+        print("-" * 90)
         print(products_dict)
         return products_dict
 
@@ -353,10 +353,28 @@ class OrdersManager:
                     ] = list(item.values())[2]
         return json.dumps(each_personnel)
 
-    def orders_with_costs(self, number, orders=None):
+    def orders_with_costs(self, number=10, orders=None):
         total_price = []
         if not orders:
             orders = self.paid_orders.select_related("customer")
+        for order in orders:
+            total_price.append(order.get_total_price())
+        orders_with_costs = zip(orders[:number], total_price[:number])
+        return orders_with_costs
+
+    def orders_with_costs_custom(self, date1=None, date2=None, number=10, orders=None):
+        if not date1 and not date2:
+            date1 = DateVars.get_first_day_current_month()
+            date2 = DateVars.current_date
+
+        total_price = []
+        if not orders:
+            orders = self.paid_orders.select_related("customer").filter(
+                create_time__date__range=(date1, date2)
+            )
+        print(orders)
+        print(type(orders))
+
         for order in orders:
             total_price.append(order.get_total_price())
         orders_with_costs = zip(orders[:number], total_price[:number])
@@ -644,7 +662,9 @@ class SalesDashboardVars:
         most_seller_morning: dict = most_seller.most_seller_products_morning()
         most_seller_noon: dict = most_seller.most_seller_products_noon()
         most_seller_night: dict = most_seller.most_seller_products_night()
-        most_seller_products_custom_by_hour = most_seller.most_seller_products_custom_by_hour
+        most_seller_products_custom_by_hour = (
+            most_seller.most_seller_products_custom_by_hour
+        )
         most_seller_products_custom_by_hour = get_date_from_staff(
             request,
             most_seller_products_custom_by_hour,
@@ -728,7 +748,7 @@ class SalesDashboardVars:
             "most_seller_morning": most_seller_morning,
             "most_seller_noon": most_seller_noon,
             "most_seller_night": most_seller_night,
-            "most_seller_products_custom_by_hour":most_seller_products_custom_by_hour,
+            "most_seller_products_custom_by_hour": most_seller_products_custom_by_hour,
             "compare_customers_with_titles": compare_customers_with_titles,
             "most_seller_products_custom": most_seller_products_custom,
         }
@@ -845,3 +865,16 @@ class DashboardVars:
         }
 
         return context
+
+
+class OrdersDashboardVars:
+    def __call__(self, request):
+        orders_manager = OrdersManager()
+        orders_with_costs_custom = orders_manager.orders_with_costs_custom
+        orders_with_costs_custom = get_date_from_staff(
+            request,
+            orders_with_costs_custom,
+            "orders_managers_date1",
+            "orders_managers_date2",
+        )
+        return orders_with_costs_custom

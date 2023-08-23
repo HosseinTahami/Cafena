@@ -6,11 +6,12 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
 # inner modules imports
 from utils import send_otp_code
 from orders.models import Order, OrderItem
-from .utils_dashboard import OrdersManager, SalesDashboardVars, DashboardVars
+from .utils_dashboard import SalesDashboardVars, DashboardVars, OrdersDashboardVars
 from .forms import UserCustomerLoginForm, OTPForm, OrderItemForm
 from .models import Personnel
 
@@ -99,19 +100,7 @@ class UserLogoutView(View):
         return redirect("cafe:home")
 
 
-class ManageOrders(View):
-    def get(self, request):
-        orders = Order.objects.all()
-        total_price = []
-        for order in orders:
-            total_price.append(order.get_total_price())
-        orders_with_costs = zip(orders, total_price)
-        # context = {'orders': orders, "total_price": total_price}
-        context = {"orders_with_costs": orders_with_costs}
-        return render(request, "accounts/manage_orders.html", context=context)
-
-
-class DashboardView(View):
+class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
         context_instance = DashboardVars()
         context = context_instance(request)
@@ -125,12 +114,21 @@ class SalesDashboardView(View):
         return render(request, "accounts/sales_dashboard.html", context=context)
 
 
-class OrderDetailView(View):
+class OrdersDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/all_orders_table.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context_instance = OrdersDashboardVars()
+        orders_with_costs_custom = context_instance(self.request)
+        context["orders_with_costs_custom"] = orders_with_costs_custom
+        return context
+
+
+class OrderDetailView(LoginRequiredMixin, View):
     form_class = OrderItemForm
 
     def setup(self, request, *args, **kwargs):
-        print(*args)
-        print(*kwargs)
         self.order = Order.objects.get(pk=kwargs["pk"])
         return super().setup(request, *args, **kwargs)
 
@@ -146,10 +144,8 @@ class OrderDetailView(View):
 
     def post(self, request, pk):
         form = self.form_class(request.POST)
-        print(form)
         if form.is_valid():
             cd = form.cleaned_data
-            print(cd)
             if OrderItem.objects.filter(order=self.order,product=cd["product"]).exists():
                 orderitem = OrderItem.objects.get(order=self.order,product=cd["product"])
                 orderitem.quantity += cd["quantity"]
@@ -162,12 +158,3 @@ class OrderDetailView(View):
 
         return redirect("accounts:order_detail", pk)
 
-class ShowAllOrders(TemplateView):
-    template_name = "accounts/all_orders_table.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        orders_manager = OrdersManager()
-        orders_with_costs = orders_manager.orders_with_costs(None)
-        context["orders_with_costs"] = orders_with_costs
-        return context

@@ -59,8 +59,15 @@
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Orders Management</h5>
-                                <p>Manage Orders, Export data, Filter by search bar.</p>
+                                <h5 class="mb-0">Orders Management
+                                    <form action="" method="get">
+                                        <label for="date1">From:</label>
+                                        <input type="date" id="date1" name="orders_managers_date1" required>
+                                        <label for="date2">To:</label>
+                                        <input type="date" id="date2" name="orders_managers_date2" required>
+                                        <input type="submit" value="Submit">
+                                    </form>
+                                </h5>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -79,7 +86,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for order, cost in orders_with_costs %}
+                                            {% for order, cost in orders_with_costs_custom %}
                                             <tr>
                                                 <td>{{ order.id }} </td>
                                                 <td>{{ cost }}</td>
