@@ -48,7 +48,7 @@
               <div class="col-xl-9">
                 <div class="checkout-top">
                   <div class="cart-form">
-                    <form action="{% url 'orders:add_order' %}" method="post">
+                    <form action="{% url 'orders:reorder' order.id %}" method="post">
                       <div class="row">
                         <div class="col-xl-8">
                           {% csrf_token %}
@@ -61,9 +61,9 @@
                             <h2 class="title text-start">Cart Total</h2>
                             <div class="ct-sub ct-sub__total">
                               <span>Total</span>
-                              <span>$ {{ total_price }}</span>
+                              <span>${{ order.get_total_price }}</span>
                             </div>
-                            <button type="submit" class="btn site-btn {% if total_price == 0 %}disabled {% endif %} ">Procced to checkout</a>
+                            <button type="submit" class="site-btn">Procced to checkout</a>
                           </div>
                         </div>
                       </div>
