@@ -48,3 +48,7 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["form"] = CartAddForm()
         return context
+
+class AboutView(View):
+    def get(self, request):
+        return render(request , 'cafe/about.html')
