@@ -4,7 +4,7 @@ from django.views.generic import DetailView
 from django.views import View
 
 # inner modules imports
-from .models import Product, Category
+from .models import Product, Category , Contact
 from orders.forms import CartAddForm
 from django.db.models import Q
 from dynamic.models import PageData
@@ -52,3 +52,16 @@ class ProductDetailView(DetailView):
 class AboutView(View):
     def get(self, request):
         return render(request , 'cafe/about.html')
+
+class ContactView(View):
+    def get(self, request):
+        return render(request , 'cafe/contact.html')
+
+    def post(self , request):
+        name = request.POST['name']
+        email = request.POST['email']
+        subject = request.POST['subject']
+        message = request.POST['message']
+        contact = Contact(name=name, email=email, subject=subject, message=message)
+        contact.save()
+        return render(request , 'cafe/home.html')
