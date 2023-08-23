@@ -141,8 +141,6 @@ class MostSellerProducts:
         )
         products = self.count_quantity(filtered_products)
         products_dict = self.to_dict(products, number)
-        print("-" * 90)
-        print(products_dict)
         return products_dict
 
     def most_seller_products_morning(self, number=None):
@@ -224,8 +222,6 @@ class MostSellerProducts:
             key: product_quantity[key] for key in list(product_quantity)[:number]
         }
         other = {key: product_quantity[key] for key in list(product_quantity)[number:]}
-        print(other)
-        print(sum(other.values()))
         sliced_dict["other"] = sum(other.values())
         return sliced_dict
 
@@ -356,7 +352,7 @@ class OrdersManager:
     def orders_with_costs(self, number=10, orders=None):
         total_price = []
         if not orders:
-            orders = self.paid_orders.select_related("customer")
+            orders = self.orders.select_related("customer")
         for order in orders:
             total_price.append(order.get_total_price())
         orders_with_costs = zip(orders[:number], total_price[:number])
@@ -369,11 +365,9 @@ class OrdersManager:
 
         total_price = []
         if not orders:
-            orders = self.paid_orders.select_related("customer").filter(
+            orders = self.orders.select_related("customer").filter(
                 create_time__date__range=(date1, date2)
             )
-        print(orders)
-        print(type(orders))
 
         for order in orders:
             total_price.append(order.get_total_price())
@@ -396,7 +390,7 @@ class BestCustomer:
         )
         self.number = number
 
-    def best_customers_custom(self, number=None, date1=None, date2=None):
+    def best_customers_custom(self,date1=None, date2=None, number=None):
         if number == None:
             number = self.number
         orders = self.orders.filter(create_time__date__range=(date1, date2))
@@ -611,7 +605,7 @@ class MostSellerCategories:
         )
         return self.count_quantity(filtered_categories, number)
 
-    def most_seller_categories_custom(self, number=None, date1=None, date2=None):
+    def most_seller_categories_custom(self,  date1=None, date2=None, number=None,):
         if number == None:
             number = self.number
 
@@ -801,6 +795,7 @@ class DashboardVars:
             "best_categories_date2",
         )
 
+
         best_customers = BestCustomer(5)
         best_customers_all = best_customers.best_customers_all()
         best_customers_year = best_customers.best_customers_year()
@@ -814,6 +809,57 @@ class DashboardVars:
             "best_customers_date1",
             "best_customers_date2",
         )
+
+        date1_ = "all_data_dashboard_date1"
+        date2_ = "all_data_dashboard_date2"
+
+        date1_condition = request.GET.get("all_data_dashboard_date1")
+        date2_condition = request.GET.get("all_data_dashboard_date2")
+
+        print(date1_condition)
+        print(date2_condition)
+
+
+        if date1_condition and date2_condition:
+            orders_count_by_status = orders.get_count_by_status
+            orders_count_by_status = get_date_from_staff(
+                request,
+                orders_count_by_status,
+                date1_,
+                date2_,
+            )
+
+            each_hour = orders.get_peak_business_hours
+            each_hour = get_date_from_staff(
+                request,
+                each_hour,
+                date1_,
+                date2_,
+            )
+
+            each_personnel_count = orders.get_personnel_count_by_date
+            each_personnel_count = get_date_from_staff(
+                request,
+                each_personnel_count,
+                date1_,
+                date2_,
+            )
+
+            best_categories_custom = categories.most_seller_categories_custom
+            best_categories_custom = get_date_from_staff(
+                request,
+                best_categories_custom,
+                date1_,
+                date2_,
+            )
+
+            best_customers_custom = best_customers.best_customers_custom
+            best_customers_custom = get_date_from_staff(
+                request,
+                best_customers_custom,
+                date1_,
+                date2_,
+            )
 
         customers_count = best_customers.count_customers()
         best_customers_list = [
