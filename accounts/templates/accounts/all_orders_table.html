@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 
 <!doctype html>
 <html lang="en">
@@ -82,7 +83,11 @@
                                                 <th class="border-0">Details</th>
                                                 <th class="border-0">Accept</th>
                                                 <th class="border-0">Reject</th>
-
+                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
+                                                {% if not order.paid  %}
+                                                <th class="border-0">Paid</th>
+                                                {% endif %}
+                                                {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -104,6 +109,18 @@
                                                 <td></td>
                                                 <td></td>
                                                 {% endif %}
+                                                {% if not order.paid %}
+                                                <td><a href="{% url 'orders:order_paid' order.pk %}" class="btn btn-success">paid</a></td>
+                                                {% else %}
+                                                <td></td>
+                                                {% endif %}
+                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
+                                                {% if not order.paid  %}
+                                                <td><a href="{% url 'orders:order_paid' order.pk %}" class="btn btn-success">paid</a></td>
+                                                {% else %}
+                                                <td></td>
+                                                {% endif %}
+                                                {% endif %}
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -117,7 +134,11 @@
                                                 <th class="border-0">Details</th>
                                                 <th class="border-0">Accept</th>
                                                 <th class="border-0">Reject</th>
-
+                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
+                                                {% if not order.paid  %}
+                                                <th class="border-0">Paid</th>
+                                                {% endif %}
+                                                {% endif %}
                                             </tr>
                                         </tfoot>
                                     </table>

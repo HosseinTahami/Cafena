@@ -6,7 +6,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # inner modules imports
 from utils import send_otp_code
@@ -107,7 +107,14 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, "accounts/dashboard.html", context=context)
 
 
-class SalesDashboardView(View):
+class SalesDashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
+    required_group = 'manager'
+    def test_func(self):
+        return self.request.user.groups.filter(name=self.required_group).exists()
+    
+    def handle_no_permission(self):
+        return redirect("accounts:dashboard")
+
     def get(self, request):
         context_instance = SalesDashboardVars()
         context = context_instance(request)
