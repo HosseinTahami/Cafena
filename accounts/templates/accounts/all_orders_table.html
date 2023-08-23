@@ -123,6 +123,9 @@
                                                         class="btn btn-success">accept</a></td>
                                                 <td><a href="{% url 'orders:order_reject' order.pk %}"
                                                         class="btn btn-danger">reject</a></td>
+                                                {% else %}
+                                                <td></td>
+                                                <td></td>
                                                 {% endif %}
                                             </tr>
                                             {% endfor %}
