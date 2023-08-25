@@ -2,7 +2,7 @@
 from django.contrib import admin
 
 # inner modules imports
-from .models import PageData, Footer
+from .models import PageData, Footer, Dashboard
 
 
 # Register your models here.
@@ -61,6 +61,25 @@ class FooterAdmin(admin.ModelAdmin):
                     "footer_googleplus",
                     "footer_twitter",
                 ),
+            },
+        ),
+    )
+
+@admin.register(Dashboard)
+class DashboardAdmin(admin.ModelAdmin):
+    list_display = ("name", "title", "target_name",)
+    search_fields = ("name", "title", "targer_name", "menu_bg_color")
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "target_name",
+                    "title",
+                    "menu_bg_color",
+                )
             },
         ),
     )
