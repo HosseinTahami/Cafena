@@ -10,11 +10,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # inner modules imports
 from utils import send_otp_code
+from dynamic.models import Dashboard
 from orders.models import Order, OrderItem
 from .utils_dashboard import SalesDashboardVars, DashboardVars, OrdersDashboardVars
 from .forms import UserCustomerLoginForm, OTPForm, OrderItemForm
 from .models import Personnel
-
 
 # third party imports
 from random import randint
@@ -104,6 +104,9 @@ class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
         context_instance = DashboardVars()
         context = context_instance(request)
+        # dynamic data
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context['page_data'] = page_data
         return render(request, "accounts/dashboard.html", context=context)
 
 
@@ -118,6 +121,9 @@ class SalesDashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request):
         context_instance = SalesDashboardVars()
         context = context_instance(request)
+        # dynamic data
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context['page_data'] = page_data
         return render(request, "accounts/sales_dashboard.html", context=context)
 
 
@@ -129,8 +135,10 @@ class OrdersDashboardView(LoginRequiredMixin, TemplateView):
         context_instance = OrdersDashboardVars()
         orders_with_costs_custom = context_instance(self.request)
         context["orders_with_costs_custom"] = orders_with_costs_custom
-        return context
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context['page_data'] = page_data
 
+        return context
 
 class OrderDetailView(LoginRequiredMixin, View):
     form_class = OrderItemForm

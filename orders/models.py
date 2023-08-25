@@ -35,6 +35,10 @@ class Order(models.Model):
     def __str__(self) -> str:
         return f"{self.status} || {self.create_time}"
 
+    def save(self, *args, **kwargs):
+        if (self.paid and self.status in 'pr'):
+            raise AssertionError
+        super().save(*args, **kwargs)
 
 class OrderItem(models.Model):
     quantity = models.IntegerField(default=1)
