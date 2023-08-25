@@ -1,15 +1,20 @@
 # django imports
+from typing import Any
+from django import http
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # inner modules imports
 from utils import send_otp_code
-from orders.models import Order
-from .utils_dashboard import OrdersManager, SalesDashboardVars, DashboardVars
-from .forms import UserCustomerLoginForm, OTPForm
+from orders.models import Order, OrderItem
+from .utils_dashboard import SalesDashboardVars, DashboardVars, OrdersDashboardVars
+from .forms import UserCustomerLoginForm, OTPForm, OrderItemForm
+from .models import Personnel
+
 
 # third party imports
 from random import randint
@@ -40,7 +45,9 @@ class UserLoginView(View):
             cd = form.cleaned_data
             phone_number = cd["phone_number"]
             code = randint(1000, 9999)
-            print(code)
+            if Personnel.objects.filter(phone_number=phone_number).exists():
+                # send_otp_code(phone_number, code)
+                print(code)
             session["phone_number"] = phone_number
             session["code"] = code
             session["created_at"] = current_datetime.isoformat()
@@ -72,7 +79,6 @@ class UserVerifyView(View):
             digit3 = cd["digit3"]
             digit4 = cd["digit4"]
             entered_code = int(digit1 + digit2 + digit3 + digit4)
-            print(entered_code)
 
             user = authenticate(
                 request,
@@ -82,7 +88,7 @@ class UserVerifyView(View):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Logged in Successfully", "success")
-                return redirect("accounts:manage_orders")
+                return redirect("accounts:dashboard")
             else:
                 messages.error(request, "The code or phone_number is wrong!", "error")
                 return redirect("accounts:verify_personnel")
@@ -94,49 +100,68 @@ class UserLogoutView(View):
         return redirect("cafe:home")
 
 
-class ManageOrders(View):
-    def get(self, request):
-        orders = Order.objects.all()
-        total_price = []
-        for order in orders:
-            total_price.append(order.get_total_price())
-        orders_with_costs = zip(orders, total_price)
-        # context = {'orders': orders, "total_price": total_price}
-        context = {"orders_with_costs": orders_with_costs}
-        return render(request, "accounts/manage_orders.html", context=context)
-
-
-class DashboardView(View):
+class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
         context_instance = DashboardVars()
-        context = context_instance()
+        context = context_instance(request)
         return render(request, "accounts/dashboard.html", context=context)
 
 
-class SalesDashboardView(View):
+class SalesDashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
+    required_group = 'manager'
+    def test_func(self):
+        return self.request.user.groups.filter(name=self.required_group).exists()
+    
+    def handle_no_permission(self):
+        return redirect("accounts:dashboard")
+
     def get(self, request):
         context_instance = SalesDashboardVars()
-        context = context_instance()
+        context = context_instance(request)
         return render(request, "accounts/sales_dashboard.html", context=context)
 
 
-class OrderDetailView(View):
-    def get(self, request, pk):
-        order = Order.objects.get(pk=pk)
-        total_price = order.get_total_price()
-        return render(
-            request,
-            "accounts/order_detail.html",
-            {"order": order, "total_price": total_price},
-        )
-
-
-class ShowAllOrders(TemplateView):
+class OrdersDashboardView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/all_orders_table.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        orders_manager = OrdersManager()
-        orders_with_costs = orders_manager.orders_with_costs(None)
-        context["orders_with_costs"] = orders_with_costs
+        context_instance = OrdersDashboardVars()
+        orders_with_costs_custom = context_instance(self.request)
+        context["orders_with_costs_custom"] = orders_with_costs_custom
         return context
+
+
+class OrderDetailView(LoginRequiredMixin, View):
+    form_class = OrderItemForm
+
+    def setup(self, request, *args, **kwargs):
+        self.order = Order.objects.get(pk=kwargs["pk"])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request, pk):
+        form = self.form_class()
+        total_price = self.order.get_total_price()
+        context = {"order": self.order, "total_price": total_price, "form": form}
+        return render(
+            request,
+            "accounts/order_detail.html",
+            context=context,
+        )
+
+    def post(self, request, pk):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            if OrderItem.objects.filter(order=self.order,product=cd["product"]).exists():
+                orderitem = OrderItem.objects.get(order=self.order,product=cd["product"])
+                orderitem.quantity += cd["quantity"]
+                orderitem.save()
+            else:
+                new_orderitem = form.save(commit=False)
+                new_orderitem.order = self.order
+                new_orderitem.price = new_orderitem.product.price
+                new_orderitem.save()
+
+        return redirect("accounts:order_detail", pk)
+

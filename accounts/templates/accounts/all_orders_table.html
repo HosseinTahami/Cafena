@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 
 <!doctype html>
 <html lang="en">
@@ -59,8 +60,15 @@
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Orders Management</h5>
-                                <p>Manage Orders, Export data, Filter by search bar.</p>
+                                <h5 class="mb-0">Orders Management
+                                    <form action="" method="get">
+                                        <label for="date1">From:</label>
+                                        <input type="date" id="date1" name="orders_managers_date1" required>
+                                        <label for="date2">To:</label>
+                                        <input type="date" id="date2" name="orders_managers_date2" required>
+                                        <input type="submit" value="Submit">
+                                    </form>
+                                </h5>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -75,11 +83,15 @@
                                                 <th class="border-0">Details</th>
                                                 <th class="border-0">Accept</th>
                                                 <th class="border-0">Reject</th>
-
+                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
+                                                {% if not order.paid  %}
+                                                <th class="border-0">Paid</th>
+                                                {% endif %}
+                                                {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for order, cost in orders_with_costs %}
+                                            {% for order, cost in orders_with_costs_custom %}
                                             <tr>
                                                 <td>{{ order.id }} </td>
                                                 <td>{{ cost }}</td>
@@ -93,6 +105,21 @@
                                                 {% if order.status == 'p' %}
                                                 <td><a href="{% url 'orders:order_accept' order.pk %}" class="btn btn-success">accept</a></td>
                                                 <td><a href="{% url 'orders:order_reject' order.pk %}" class="btn btn-danger">reject</a></td>
+                                                {% else %}
+                                                <td></td>
+                                                <td></td>
+                                                {% endif %}
+                                                {% if not order.paid %}
+                                                <td><a href="{% url 'orders:order_paid' order.pk %}" class="btn btn-success">paid</a></td>
+                                                {% else %}
+                                                <td></td>
+                                                {% endif %}
+                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
+                                                {% if not order.paid  %}
+                                                <td><a href="{% url 'orders:order_paid' order.pk %}" class="btn btn-success">paid</a></td>
+                                                {% else %}
+                                                <td></td>
+                                                {% endif %}
                                                 {% endif %}
                                             </tr>
                                             {% endfor %}
@@ -107,7 +134,11 @@
                                                 <th class="border-0">Details</th>
                                                 <th class="border-0">Accept</th>
                                                 <th class="border-0">Reject</th>
-
+                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
+                                                {% if not order.paid  %}
+                                                <th class="border-0">Paid</th>
+                                                {% endif %}
+                                                {% endif %}
                                             </tr>
                                         </tfoot>
                                     </table>

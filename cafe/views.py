@@ -42,20 +42,6 @@ class HomeView(View):
             return render(request, "cafe/home.html", context)
 
 
-# class SearchView(View):
-#     def get(self, request):
-#         searched = request.GET.get("searched")
-#         results = Product.objects.filter(
-#             Q(name__icontains=searched) | Q(description__icontains=searched)
-#         ).distinct()
-#         page_data = PageData.get_page_date("Search_Page")
-#         return render(
-#             request,
-#             "cafe/search_results.html",
-#             {"results": results, "page_data": page_data},
-#         )
-
-
 class ProductDetailView(DetailView):
     model = Product
     template_name = "cafe/product_detail.html"
