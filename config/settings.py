@@ -83,6 +83,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'orders.context_processors.dict_cookie'
             ],
         },
     },
@@ -95,9 +96,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        #'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'neondb',
+        'USER': 'smahdiabrishami78',
+        'PASSWORD': '7hMN2grxiSeQ',
+        'HOST': 'ep-gentle-dust-27348589.eu-central-1.aws.neon.tech',
+        'PORT': '5432',
     }
 }
 
