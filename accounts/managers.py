@@ -25,5 +25,6 @@ class PersonnelManager(BaseUserManager):
     def create_superuser(self, full_name, email, phone_number, password, image=None):
         user = self.create_user(full_name, email, phone_number, password, image)
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
