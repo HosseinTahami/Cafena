@@ -30,8 +30,8 @@ class Order(models.Model):
         return f"{self.status} || {self.create_time}"
 
     def save(self, *args, **kwargs):
-        if self.paid and self.status != 'a':
-            self.status = 'a'
+        if (self.paid and self.status in 'pr'):
+            raise AssertionError
         super().save(*args, **kwargs)
 
 class OrderItem(models.Model):
