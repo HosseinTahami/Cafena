@@ -207,7 +207,7 @@ class MostSellerProducts:
                 product.name,
                 product.total_quantity,
                 float(product.price),
-                float(product.price) * product.total_quantity,
+                float(product.price) * (product.total_quantity or 0),
             ]
         sliced_dict = {
             key: product_quantity[key] for key in list(product_quantity)[:number]
@@ -217,7 +217,7 @@ class MostSellerProducts:
     def to_dict_count(self, most_sellar, number):
         product_quantity = {}
         for product in most_sellar:
-            product_quantity[product.name] = product.total_quantity
+            product_quantity[product.name] = (product.total_quantity or 0)
         sliced_dict = {
             key: product_quantity[key] for key in list(product_quantity)[:number]
         }
