@@ -133,11 +133,6 @@
                                                 <td></td>
                                                 <td></td>
                                                 {% endif %}
-                                                {% if not order.paid %}
-                                                <td><a href="{% url 'orders:order_paid' order.pk %}" class="btn btn-success">paid</a></td>
-                                                {% else %}
-                                                <td></td>
-                                                {% endif %}
                                                 {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
                                                 {% if not order.paid  %}
                                                 <td><a href="{% url 'orders:order_paid' order.pk %}" class="btn btn-success">paid</a></td>
