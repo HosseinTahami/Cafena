@@ -1,4 +1,7 @@
 {% load static %}
+
+<!-- header start -->
+
 <header class="site-header site-header__3 site-header__4">
     <div class="menu-area menu-area__3 menu-area__4">
         <div class="container-fluid custom-width custom-width__2">
@@ -38,9 +41,9 @@
                                     <span class="close"><i class="fal fa-times"></i></span>
                                 </div>
                                 <div class="search__form">
-                                    <form role="search" method="get" action="{% url 'cafe:search_results' %}">
+                                    <form role="search" method="get" action="">
                                         <input type="search" name="searched" value="" placeholder="Search Keywords">
-                                        <button type="submit"><i class="far fa-search"></i></button>
+                                        <button type="submit" name="search_items"><i class="far fa-search"></i></button>
                                     </form>
                                 </div>
                             </div>
@@ -83,9 +86,9 @@
                                 <span class="close"><i class="fal fa-times"></i></span>
                             </div>
                             <div class="search__form">
-                                <form role="search" method="get" action="{% url 'cafe:search_results' %}">
+                                <form role="search" method="get" action="">
                                     <input type="search" name="searched" value="" placeholder="Search Keywords">
-                                    <button type="submit"><i class="far fa-search"></i></button>
+                                    <button type="submit" name="search_items"><i class="far fa-search"></i></button>
                                 </form>
                             </div>
                         </div>
