@@ -17,7 +17,7 @@ class CustomerForm(forms.Form):
         (
             table.table_number,
             "Name: "
-            + str(table.table_number)
+            + str(table.table_name)
             + " / "
             + "Number: "
             + str(table.table_number),
