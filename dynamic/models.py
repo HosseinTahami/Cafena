@@ -69,3 +69,32 @@ class PageData(models.Model):
                 )
 
                 return page_data
+            
+class Dashboard(models.Model):
+    target_name = models.CharField(max_length=32)
+    title = models.CharField(max_length=32)
+    name = models.CharField(max_length=32)
+    menu_bg_color = models.CharField(max_length=16)
+
+    def __str__(self) -> str:
+        return str(self.target_name) + ' page data'
+
+    @classmethod
+    def get_page_date(cls, target):
+        try:
+            page_data = cls.objects.get(target_name = target)
+            return page_data
+        except:
+            try:
+                page_data = cls.objects.get(target_name = 'Default_Page')
+                return page_data
+            except:
+                page_data = cls.objects.create(
+                    target_name = 'Default_Page',
+                    title = 'Dashboard',
+                    name = 'ORDERS AND ANALYTICS',
+                    menu_bg_color = '#0e0c28'
+
+                )
+
+                return page_data

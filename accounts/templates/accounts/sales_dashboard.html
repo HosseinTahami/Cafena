@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 
 <!doctype html>
 <html lang="en">
@@ -16,15 +17,17 @@
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/vector-map/jqvmap.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/jvectormap/jquery-jvectormap-2.0.2.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/fonts/flag-icon-css/flag-icon.min.css' %}">
-    <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
+    <title>{{page_data.title}}</title>
 </head>
 
 <body>
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
+  
     <div class="dashboard-main-wrapper">
         {% include 'inc/include.html' %}
+        {% if user|user_in_group:"manager" %}
 
         <!-- ============================================================== -->
         <!-- wrapper  -->
@@ -53,7 +56,6 @@
                 <!-- ============================================================== -->
                 <!-- pagehader  -->
                 <!-- ============================================================== -->
-
 
                 <div class="row">
                     <!-- metric -->
@@ -102,9 +104,19 @@
                     <!-- ============================================================== -->
                     <div class="row">
                     {% for products, title in most_seller_products_with_titles %}
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
-                        <div class="card">
-                            <h5 class="card-header">{{ title }}</h5>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6 d-flex">
+                        <div class="card flex-fill">
+                            <h5 class="card-header">{{ title }}
+                                {% if title == 'Top Selling Products Of Custom Date' %}
+                                <form action="" method="get">
+                                    <label for="date1">From:</label>
+                                    <input type="date" id="date1" name="most_seller_date1" required>
+                                    <label for="date2">To:</label>
+                                    <input type="date" id="date2" name="most_seller_date2" required>
+                                    <input type="submit" value="Submit">
+                                </form>
+                                {% endif %}
+                            </h5>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table">
@@ -171,11 +183,33 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                            <div class="card">
+                                <h5 class="card-header">Orders Demographic
+                                    <form action="" method="get">
+                                        <label for="date1">From:</label>
+                                        <input type="date" id="date1" name="most_seller_products_custom_date1" required>
+                                        <label for="date2">To:</label>
+                                        <input type="date" id="date2" name="most_seller_products_custom_date2" required>
+                                        <label for="hour1">Enter an hour (0-23):</label>
+                                        <input type="number" id="hour1" name="most_seller_products_custom_hour1" min="0" max="23" required>
+                                        <label for="hour2">Enter an hour (0-23):</label>
+                                        <input type="number" id="hour2" name="most_seller_products_custom_hour2" min="0" max="23" required>
+                                        <input type="submit" value="Submit">
+                                    </form>
+                                </h5>
+                                <div class="card-body">
+                                    <canvas id="mostSellerProductsCustomChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
         </div>
         <!-- ============================================================== -->
         <!-- end wrapper  -->
         <!-- ============================================================== -->
+    </div>
+    {% endif %}
     </div>
     <!-- ============================================================== -->
     <!-- end main wrapper  -->
@@ -256,7 +290,31 @@ var ctx = document.getElementById('mostSellerProductsNightChart').getContext('2d
         }
     });
 
+// -----------------------------------------------------------------------------
+
+var ctx = document.getElementById('mostSellerProductsCustomChart').getContext('2d');
+    var mostSellerProductssCustomData = JSON.parse('{{most_seller_products_custom_by_hour|safe }}');
+    console.log(mostSellerProductssCustomData)
+    var labels = Object.keys(mostSellerProductssCustomData);
+    var values = Object.values(mostSellerProductssCustomData);
+
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: values,
+                backgroundColor: ['green', 'orange', 'red', "gray"], 
+            }],
+            labels: labels,
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+    });
+
     </script>
 </body>
  
 </html>
+
