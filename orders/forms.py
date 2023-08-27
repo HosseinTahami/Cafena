@@ -1,5 +1,6 @@
 # django imports
 from django import forms
+from .models import Table
 
 
 class CartAddForm(forms.Form):
@@ -12,5 +13,16 @@ class CartAddForm(forms.Form):
 
 
 class CustomerForm(forms.Form):
+    TABLE_CHOICES = [
+        (
+            table.table_number,
+            "Name: "
+            + str(table.table_name)
+            + " / "
+            + "Number: "
+            + str(table.table_number),
+        )
+        for table in Table.objects.all()
+    ]
     phone_number = forms.CharField(max_length=11, widget=forms.TextInput)
-    table_number = forms.IntegerField()
+    table_number = forms.ChoiceField(choices=TABLE_CHOICES)

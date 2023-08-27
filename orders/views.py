@@ -1,7 +1,7 @@
 # django imports
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 
 # inner modules imports
 from cafe.models import Product
@@ -93,7 +93,7 @@ class AddOrderView(View):
             return response
 
 
-class OrderAccept(View):
+class OrderAccept(LoginRequiredMixin, View):
     def get(self, request, pk):
         order = Order.objects.get(pk=pk)
         order.status = "a"
@@ -102,11 +102,21 @@ class OrderAccept(View):
         return redirect("accounts:dashboard")
 
 
-class OrderReject(View):
+class OrderReject(LoginRequiredMixin, View):
     def get(self, request, pk):
         order = Order.objects.get(pk=pk)
         order.status = "r"
         order.personnel = request.user
+        order.save()
+        return redirect("accounts:dashboard")
+    
+
+class OrderPaid(LoginRequiredMixin, PermissionRequiredMixin,View):
+    permission_required = 'orders.change_paid' 
+
+    def get(self, request, pk):
+        order = Order.objects.get(pk=pk)
+        order.paid = True
         order.save()
         return redirect("accounts:dashboard")
 
@@ -114,8 +124,6 @@ class OrderReject(View):
 class OrdersHistoryView(View):
     def get(self, request):
         session = request.session.get("orders_info")
-        print(request.session)
-        print(session)
         try:
             order_ids = list(session.keys())
             orders = Order.objects.filter(id__in=order_ids)
