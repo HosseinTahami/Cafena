@@ -1,6 +1,7 @@
 # django imports
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 
 # inner modules imports
@@ -91,6 +92,7 @@ class AddOrderView(View):
             response = redirect("orders:orders_history")
             response.delete_cookie(self.CART_COOKIE_KEY)
             return response
+        return HttpResponse(status=400)
 
 
 class OrderAccept(LoginRequiredMixin, View):
