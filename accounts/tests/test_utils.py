@@ -5,11 +5,11 @@ from model_bakery   import baker
 
 class MostSellerProductsTest(TestCase):
     def setUp(self):
-        self.product1 = baker.make(Product,name="Product 1", price=10.0)
-        self.product2 = baker.make(Product,name="Product 2", price=20.0)
-        self.product3 = baker.make(Product,name="Product 3", price=30.0)
-        self.product4 = baker.make(Product,name="Product 4", price=40.0)
-        self.product5 = baker.make(Product,name="Product 5", price=50.0)
+        self.product1 = baker.make(Product,name="Product 1", price=10.0, _create_files=True)
+        self.product2 = baker.make(Product,name="Product 2", price=20.0, _create_files=True)
+        self.product3 = baker.make(Product,name="Product 3", price=30.0, _create_files=True)
+        self.product4 = baker.make(Product,name="Product 4", price=40.0, _create_files=True)
+        self.product5 = baker.make(Product,name="Product 5", price=50.0, _create_files=True)
 
     def test_most_seller_products_all(self):
         most_seller = MostSellerProducts(3)

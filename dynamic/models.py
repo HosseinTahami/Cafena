@@ -8,10 +8,10 @@ from utils import item_directory_path
 
 # Create your models here.
 class Footer(models.Model):
-    footer_name = models.CharField(max_length=16)
+    footer_name = models.CharField(max_length=32)
     footer_phone = models.CharField(max_length=16)
     footer_logo = models.ImageField(upload_to='footer_logo/')
-    footer_email = models.CharField(max_length=16)
+    footer_email = models.CharField(max_length=32)
     footer_text = models.CharField(max_length=255)
     footer_youtube = models.CharField(max_length=128,default='#')
     footer_telegram = models.CharField(max_length=128,default='#')

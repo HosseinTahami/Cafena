@@ -17,7 +17,7 @@
                         <p>Availability: In Stock</p>
                         <br>                      
                         <div class="card-body">
-                                <form method="post" action="{% url 'orders:cart_add' product.id %}">
+                                <form method="post" action="">
                                     {% csrf_token %}
                                     <div class="form-group col-3" style="display: inline-block;">
                                         <label for="id_quantity">Quantity:</label>

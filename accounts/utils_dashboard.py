@@ -816,9 +816,6 @@ class DashboardVars:
         date1_condition = request.GET.get("all_data_dashboard_date1")
         date2_condition = request.GET.get("all_data_dashboard_date2")
 
-        print(date1_condition)
-        print(date2_condition)
-
 
         if date1_condition and date2_condition:
             orders_count_by_status = orders.get_count_by_status

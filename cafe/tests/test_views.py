@@ -3,7 +3,8 @@ from django.urls import reverse
 from cafe.models import Category, Product
 from orders.forms import CartAddForm
 from dynamic.models import PageData
-from cafe.views import HomeView, SearchView, ProductDetailView
+from cafe.views import HomeView, ProductDetailView
+from model_bakery import baker
 
 class ViewsTestCase(TestCase):
     @classmethod
@@ -13,11 +14,13 @@ class ViewsTestCase(TestCase):
     
     def setUp(self):
         self.category = Category.objects.create(name="Test Category")
-        self.product = Product.objects.create(
-            name="Test Product",
-            category=self.category,
-            price=10.0,
-        )
+        # self.product = Product.objects.create(
+        #     name="Test Product",
+        #     category=self.category,
+        #     price=10.0,
+        # )
+        self.product = baker.make(Product, _create_files=True)
+
     
 def test_home_view(self):
     url = reverse("your_actual_url_name_here")  # Replace with the actual URL name
@@ -31,17 +34,6 @@ def test_home_view(self):
     self.assertEqual(len(response.context["all_products"]), 1)
     self.assertIsInstance(response.context["form"], CartAddForm)
     self.assertIsInstance(response.context["page_data"], PageData)
-    
-    def test_search_view(self):
-        url = reverse("search")  # Replace with the actual URL name for SearchView
-        request = self.factory.get(url, {"searched": "Test"})
-        response = SearchView.as_view()(request)
-    
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "cafe/search_results.html")
-    
-        self.assertIn("results", response.context)
-        self.assertIsInstance(response.context["page_data"], PageData)
     
     def test_product_detail_view(self):
         url = reverse("product_detail", kwargs={"pk": self.product.pk})
