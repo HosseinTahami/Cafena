@@ -12,6 +12,8 @@
                             <ul>
                                 <li><a href="{% url 'cafe:home' %}">Menu</a></li>
                                 <li><a href="{% url 'orders:orders_history' %}">History</a></li>
+                                <li><a href="{% url 'cafe:about' %}">About</a></li>
+                                <li><a href="{% url 'cafe:contact' %}">Contact</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -26,14 +28,6 @@
                 <div class="col-xl-5 col-lg-6 col-md-7 align-self-center">
                     <div
                         class="menu-area__right menu-area__right--3 menu-area__right--4 d-flex justify-content-end align-items-center">
-                        <div class="main-menu main-menu__3 main-menu__4">
-                            <nav>
-                                <ul>
-                                    <li><a href="{% url 'cafe:about' %}">About</a></li>
-                                    <li><a href="{% url 'cafe:contact' %}">Contact</a></li>
-                                </ul>
-                            </nav>
-                        </div>
                         <div class="wrapper wrapper__2 pl-50 d-flex justify-content-end align-items-center">
                             <div class="search">
                                 <div class="search__trigger item">
@@ -230,19 +224,15 @@
                 </div>
                 <div class="content">
                     <h4 class="title">
-                        <a >{{ value.name }}</a>
+                        <a>{{ value.name }}</a>
                     </h4>
                     <span class="price">${{ value.price }}</span>
                     <span class="price">{{ value.quantity }}</span>
 
-                    <button
-                    type="button"
-                    class="remove"                 
-                    data-product-id-nav="{{ key }}"
-                    onclick="removeProductNav(this)"
-                  >
-                  <i class="fal fa-times"></i>
-                  </button>
+                    <button type="button" class="remove" data-product-id-nav="{{ key }}"
+                        onclick="removeProductNav(this)">
+                        <i class="fal fa-times"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -261,9 +251,9 @@
 </aside>
 <div class="overlay"></div>
 
-<script>    
+<script>
 
-  </script>
+</script>
 
 </body>
 
