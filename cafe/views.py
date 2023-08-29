@@ -50,6 +50,10 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = CartAddForm()
+
+        page_data = PageData.get_page_date("Details_Page")
+        context["page_data"] = page_data
+
         return context
 
 class AboutView(View):
