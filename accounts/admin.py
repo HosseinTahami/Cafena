@@ -1,6 +1,9 @@
+# django imports
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
+
+# inner modules imports
 from .forms import PersonnelCreationForm, PersonnelChangeForm
 from .models import Personnel, Customer
 
@@ -30,7 +33,7 @@ class PersonnelAdmin(UserAdmin):
                 )
             },
         ),
-        ("Permissions", {"fields": ("is_admin", "is_active", "last_login")}),
+        ("Permissions", {"fields": ("is_admin", "is_active", "is_superuser","last_login","groups", "user_permissions")}),
     )
     add_fieldsets = (
         (
@@ -54,8 +57,13 @@ class PersonnelAdmin(UserAdmin):
         "phone_number",
     )
     ordering = ("full_name",)
-    filter_horizontal = ()
+    filter_horizontal = ("groups", "user_permissions")
 
+    def get_form(self, request, obj, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        is_superuser = request.user.is_superuser
+        if not is_superuser:
+            form.base_fields["is_superuser"].disabled = True
+        return form
 
-admin.site.unregister(Group)
 admin.site.register(Personnel, PersonnelAdmin)

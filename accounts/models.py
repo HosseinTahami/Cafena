@@ -1,10 +1,13 @@
+# django imports
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+
+# inner modules imports
 from .managers import PersonnelManager
 
 
 # Create your models here.
-class Personnel(AbstractBaseUser):
+class Personnel(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(max_length=255)
     email = models.EmailField()
     phone_number = models.CharField(max_length=11, unique=True)
@@ -21,12 +24,6 @@ class Personnel(AbstractBaseUser):
     def __str__(self):
         return self.email
 
-    def has_perm(user_obj, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
-
     @property
     def is_staff(self):
         return self.is_admin
@@ -40,4 +37,3 @@ class Customer(models.Model):
 
     def __str__(self) -> str:
         return f"{self.phone_number}"
-

@@ -2,9 +2,11 @@
 <!-- navbar -->
 <!-- ============================================================== -->
 {% load static %}
+{% load custom_tags %}
+
 <div class="dashboard-header">
     <nav class="navbar navbar-expand bg-white fixed-top">
-        <a class="navbar-brand" href="{% url 'accounts:dashboard' %}">Orders and Analytics</a>
+        <a class="navbar-brand" href="{% url 'accounts:dashboard' %}">{{page_data.name}}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -12,7 +14,8 @@
             {% if request.user.is_authenticated %}
             <ul class="navbar-nav ml-auto navbar-right-top">
                 <li class="nav-item dropdown nav-user">
-                    <a class="nav-link nav-user-img" href="" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{request.user.image}}{% if request.user.image %}{% else %}{% static 'accounts/assets/images/avatar-1.jpg' %}{% endif %}" alt="" class="user-avatar-md rounded-circle"></a>
+                    <a class="nav-link nav-user-img" href="" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="{% if request.user.image %}{{request.user.image.url}}{% else %}{% static 'accounts/assets/images/avatar-1.jpg' %}{% endif %}" alt="" class="user-avatar-md rounded-circle"></a>
                     <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
                         <div class="nav-user-info">
                             <h5 class="mb-0 text-white nav-user-name">{{request.user.full_name}} </h5>
@@ -34,7 +37,8 @@
 <!-- ============================================================== -->
 <!-- left sidebar -->
 <!-- ============================================================== -->
-<div class="nav-left-sidebar sidebar-dark">
+<!-- In style argument in next line, No django error, just html format erro, no problem -->
+<div class="nav-left-sidebar sidebar-dark" style="background-color: {{ page_data.menu_bg_color }};">   
     <div class="menu-list">
         <nav class="navbar navbar-expand-lg  navbar-light">
             <a class="d-xl-none d-lg-none" href="#">Menu</a>
@@ -50,14 +54,16 @@
                             <ul class="nav flex-column">
                                 <li class="nav-item">
                                             <li class="nav-item">
-                                                <a class="nav-link" href="{% url 'accounts:dashboard' %}">E Commerce Dashboard</a>
+                                                <a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a>
                                             </li>
                                 </li>
                                 <li class="nav-item">
+                                {% if user|user_in_group:"manager" %}
                                     <a class="nav-link" href="{% url 'accounts:sales_dashboard' %}">Sales</a>
+                                {% endif %}
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'accounts:show_all_orders' %}">Orders Management</a>
+                                    <a class="nav-link" href="{% url 'accounts:orders_dashboard' %}">Orders Management</a>
                                 </li>
                             </ul>
                         </div>
