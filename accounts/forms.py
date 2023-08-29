@@ -49,4 +49,4 @@ class OTPForm(forms.Form):
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
-        exclude = ["order","price"]
+        exclude = ["order", "price"]
