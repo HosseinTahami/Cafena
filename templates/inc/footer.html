@@ -1,90 +1,69 @@
 {% load static %}
 
 <footer class="site-footer dark-bg pt-155 position-relative">
-        <div class="footer__top">
-            <a href="#" class="go-top go-top__white position-absolute d-flex align-items-center justify-content-center">
-                <i class="fal fa-long-arrow-up"></i>
-            </a>
-            <div class="container">
-                <div class="row justify-content-center mt-none-30">
-                    <div class="col-xl-3 col-lg-6 mt-30">
-                        <div class="footer__widget footer__info">
-                            <div class="item d-flex align-items-center justify-content-center">
-                                <img src="{% static 'images/icons/ft-phone.png' %}" alt="">
-                                <span>Phone :</span>
-                                <a href="tel:{{page_data.footer.footer_phone}}">{{page_data.footer.footer_phone}}</a>
-                            </div>
+    <div class="footer__top">
+        <a href="#" class="go-top go-top__white position-absolute d-flex align-items-center justify-content-center">
+            <i class="fal fa-long-arrow-up"></i>
+        </a>
+        <div class="container">
+            <div class="row justify-content-center mt-none-30">
+                <div class="col-xl-3 col-lg-6 mt-30">
+                    <div class="footer__widget footer__info">
+                        <div class="item d-flex align-items-center justify-content-center">
+                            <img src="{% static 'images/icons/ft-phone.png' %}" alt="">
+                            <span>Phone :</span>
+                            <a href="tel:{{page_data.footer.footer_phone}}">{{page_data.footer.footer_phone}}</a>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-6 mt-30 pl-55">
-                        <div class="footer__widget footer__info">
-                            <div class="item d-flex align-items-center justify-content-start">
-                                <img src=" {% static 'images/icons/ft-map-marker.png' %}" alt="">
-                                <span>Address :</span>
-                                <p>30 North West New</p>
-                            </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 mt-30 pl-55">
+                    <div class="footer__widget footer__info">
+                        <div class="item d-flex align-items-center justify-content-start">
+                            <img src=" {% static 'images/icons/ft-map-marker.png' %}" alt="">
+                            <span>Address :</span>
+                            <p>30 North West New</p>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-lg-6 mt-30 pl-55">
-                        <div class="footer__widget">
-                            <!-- <div class="subscribe">
+                </div>
+                <div class="col-xl-3 col-lg-6 mt-30 pl-55">
+                    <div class="footer__widget">
+                        <!-- <div class="subscribe">
                                 <form action="index.html">
                                     <input type="email" name="email" id="email" placeholder="Enter your email">
                                     <button type="submit" class="subscribe__btn">Subscribe <i class="fa fa-paper-plane"></i></button>
                                 </form>
                             </div> -->
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5445.06838034744!2d51.40944202970417!3d35.759233731197675!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e06ecb499b5ed%3A0x3c21fa7a43c6db14!2sLamiz%20Coffee!5e0!3m2!1sen!2snl!4v1692712743080!5m2!1sen!2snl" width="300" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        </div>
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5445.06838034744!2d51.40944202970417!3d35.759233731197675!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e06ecb499b5ed%3A0x3c21fa7a43c6db14!2sLamiz%20Coffee!5e0!3m2!1sen!2snl!4v1692712743080!5m2!1sen!2snl"
+                            width="300" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="footer__middle mt-65">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-7">
-                        <div class="footer__logo--content">
-                            <img class="mb-15" src="{{page_data.footer.footer_logo.url}}" alt="">
-                            <p>{{page_data.footer.footer_text}}</p>
-                        </div>
+    </div>
+    <div class="footer__middle mt-65">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="footer__logo--content">
+                        <img class="mb-15" src="{{page_data.footer.footer_logo.url}}" alt="">
+                        <p>{{page_data.footer.footer_text}}</p>
                     </div>
-                    <div class="col-lg-5 align-self-center">
-                        <div class="social-links d-flex align-items-center justify-content-lg-center">
-                            <a href="{{page_data.footer.footer_twitter}}" target="_blank"><i class="fab fa-twitter"></i></a>
-                            <a href="{{page_data.footer.footer_telegram}}" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                            <a href="{{page_data.footer.footer_youtube}}" target="_blank"><i class="fab fa-youtube"></i></a>
-                            <a href="{{page_data.footer.footer_googleplus}}" target="_blank"><i class="fab fa-google-plus-g"></i></a>
-                            <a href="{{page_data.footer.footer_instagram}}" target="_blank"><i class="fab fa-instagram"></i></a>
-                        </div>
+                </div>
+                <div class="col-lg-5 align-self-center">
+                    <div class="social-links d-flex align-items-center justify-content-lg-center">
+                        <a href="{{page_data.footer.footer_twitter}}" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="{{page_data.footer.footer_telegram}}" target="_blank"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="{{page_data.footer.footer_youtube}}" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="{{page_data.footer.footer_googleplus}}" target="_blank"><i
+                                class="fab fa-google-plus-g"></i></a>
+                        <a href="{{page_data.footer.footer_instagram}}" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="footer__menu-area mt-30 pb-90">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-9">
-                        <div class="footer__menu">
-                            <nav>
-                                <ul>
-                                    <li><a href="index.html">Home</a></li>
-                                    <li><a href="about.html">About</a></li>
-                                    <li><a href="menu.html">Menu</a></li>
-                                    <li><a href="reservation.html">Reservation</a></li>
-                                    <li><a href="#0">pages</a></li>
-                                    <li><a href="shop.html">Shop</a></li>
-                                    <li><a href="blog.html">Blog</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 text-center text-lg-end">
-                        <a href="#" class="go-top go-top__bottom">
-                            <span>go top</span>
-                            <i class="fal fa-long-arrow-up"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    </div>
+</footer>
