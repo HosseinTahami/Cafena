@@ -2,6 +2,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
+from import_export.admin import ImportExportModelAdmin
 
 # inner modules imports
 from .forms import PersonnelCreationForm, PersonnelChangeForm
@@ -9,12 +10,12 @@ from .models import Personnel, Customer
 
 
 @admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
+class CustomerAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ("phone_number",)
     search_fields = ("phone_number",)
 
 
-class PersonnelAdmin(UserAdmin):
+class PersonnelAdmin(ImportExportModelAdmin, UserAdmin):
     add_form = PersonnelCreationForm
     form = PersonnelChangeForm
 
