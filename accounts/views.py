@@ -87,7 +87,11 @@ class UserVerifyView(View):
             )
             if user is not None:
                 login(request, user)
-                messages.success(request, "Logged in Successfully", "success")
+                messages.success(
+                    request,
+                    f"{request.user.full_name}\n Logged In Successfully",
+                    "success",
+                )
                 return redirect("accounts:dashboard")
             else:
                 messages.error(request, "The code or phone_number is wrong!", "error")
@@ -96,8 +100,18 @@ class UserVerifyView(View):
 
 class UserLogoutView(View):
     def get(self, request):
-        logout(request)
-        messages.success(request, "Logged Out Successfully", "warning")
+        if not request.user.is_authenticated:
+            messages.error(
+                request, "Logged Out Failed:\n You're not Logged In", "danger"
+            )
+
+        else:
+            messages.success(
+                request,
+                f"{request.user.full_name}\n Logged Out Successfully",
+                "warning",
+            )
+            logout(request)
         return redirect("cafe:home")
 
 
