@@ -147,7 +147,7 @@ class OrderDetailView(LoginRequiredMixin, View):
         self.order = Order.objects.get(pk=kwargs["pk"])
         return super().setup(request, *args, **kwargs)
 
-    def get(self, request, pk):
+    def get(self, request, **kwargs):
         form = self.form_class()
         total_price = self.order.get_total_price()
         context = {"order": self.order, "total_price": total_price, "form": form}
@@ -157,7 +157,7 @@ class OrderDetailView(LoginRequiredMixin, View):
             context=context,
         )
 
-    def post(self, request, pk):
+    def post(self, request, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
@@ -171,5 +171,5 @@ class OrderDetailView(LoginRequiredMixin, View):
                 new_orderitem.price = new_orderitem.product.price
                 new_orderitem.save()
 
-        return redirect("accounts:order_detail", pk)
+        return redirect("accounts:order_detail", kwargs["pk"])
 
