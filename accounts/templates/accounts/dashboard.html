@@ -3,7 +3,7 @@
 
 <!doctype html>
 <html lang="en">
- 
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/fonts/fontawesome/css/fontawesome-all.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/charts/chartist-bundle/chartist.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/charts/morris-bundle/morris.css' %}">
-    <link rel="stylesheet" href="{% static 'accounts/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet"
+        href="{% static 'accounts/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/charts/c3charts/c3.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/assets/vendor/fonts/flag-icon-css/flag-icon.min.css' %}">
     <title>{{page_data.title}}</title>
@@ -42,20 +43,22 @@
                             <div class="page-header">
                                 <h2 class="pageheader-title">Dashboard
                                     <h5>
-                                    <form action="" method="get">
-                                        <label for="date1">From:</label>
-                                        <input type="date" id="date1" name="all_data_dashboard_date1" required>
-                                        <label for="date2">To:</label>
-                                        <input type="date" id="date2" name="all_data_dashboard_date2" required>
-                                        <input type="submit" value="Submit">
-                                    </form>
-                                    </h5> 
+                                        <form action="" method="get">
+                                            <label for="date1">From:</label>
+                                            <input type="date" id="date1" name="all_data_dashboard_date1" required>
+                                            <label for="date2">To:</label>
+                                            <input type="date" id="date2" name="all_data_dashboard_date2" required>
+                                            <input type="submit" value="Submit">
+                                        </form>
+                                    </h5>
                                 </h2>
-                                <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
+                                <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus
+                                    vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
                                 <div class="page-breadcrumb">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
+                                            <li class="breadcrumb-item"><a href="#"
+                                                    class="breadcrumb-link">Dashboard</a></li>
                                             <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                                         </ol>
                                     </nav>
@@ -82,12 +85,12 @@
                             </div>
                             {% endfor %}
                         </div>
-                       
 
-                            <!-- ============================================================== -->
-                            <!-- product category  -->
-                            <!-- ============================================================== -->
-                            <div class="row">
+
+                        <!-- ============================================================== -->
+                        <!-- product category  -->
+                        <!-- ============================================================== -->
+                        <div class="row">
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="card">
                                     <h5 class="card-header"> Most sold categories</h5>
@@ -120,112 +123,112 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                            <!-- ============================================================== -->
-                            <!-- end product category  -->
-                                   <!-- product sales  -->
-                            <!-- ============================================================== -->
+                        </div>
+                        <!-- ============================================================== -->
+                        <!-- end product category  -->
+                        <!-- product sales  -->
+                        <!-- ============================================================== -->
 
 
 
-                            <!-- ============================================================== -->
-                                   <!-- Best customers  -->
-                            <!-- ============================================================== -->
-                            <div class="row">
-                                {% for customers, title in best_customers_with_title %}
-                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
-                                    <div class="card flex-fill">
-                                        <h5 class="card-header">{{ title }}</h5>
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table">
-                                                    <thead class="bg-light">
-                                                        <tr class="border-0">
-                                                            <th class="border-0">Phone Number</th>
-                                                            <th class="border-0">Buy</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                        <!-- ============================================================== -->
+                        <!-- Best customers  -->
+                        <!-- ============================================================== -->
+                        <div class="row">
+                            {% for customers, title in best_customers_with_title %}
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
+                                <div class="card flex-fill">
+                                    <h5 class="card-header">{{ title }}</h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">Phone Number</th>
+                                                        <th class="border-0">Buy</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
                                                     {% for customer in customers %}
-                                                        <tr>
-                                                            <td>{{ customer.0 }} </td>
-                                                            <td>{{ customer.1 }}</td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td>{{ customer.0 }} </td>
+                                                        <td>{{ customer.1 }}</td>
+                                                    </tr>
                                                     {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                                {% endfor %}
                             </div>
-                            
-                            <!-- ============================================================== -->
-                                   <!-- End Best customers  -->
-                            <!-- ============================================================== -->
-                            
-                            <!-- ============================================================== -->
-                                   <!-- Start Custom Customer&Category and get count personnel  -->
-                            <!-- ============================================================== -->
+                            {% endfor %}
+                        </div>
+
+                        <!-- ============================================================== -->
+                        <!-- End Best customers  -->
+                        <!-- ============================================================== -->
+
+                        <!-- ============================================================== -->
+                        <!-- Start Custom Customer&Category and get count personnel  -->
+                        <!-- ============================================================== -->
 
 
-                            <div class="row align-items-stretch">
-                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
-                                    <div class="card flex-fill">
-                                        <h5 class="card-header">Best customers custom
-                                            <form action="" method="get">
-                                                <label for="date1">From:</label>
-                                                <input type="date" id="date1" name="best_customers_date1" required>
-                                                <label for="date2">To:</label>
-                                                <input type="date" id="date2" name="best_customers_date2" required>
-                                                <input type="submit" value="Submit">
-                                            </form>
-                                        </h5>
-                                        <div class="card-body p-0">
-                                            <div class="table-responsive">
-                                                <table class="table">
-                                                    <thead class="bg-light">
-                                                        <tr class="border-0">
-                                                            <th class="border-0">Phone Number</th>
-                                                            <th class="border-0">Buy</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                        <div class="row align-items-stretch">
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
+                                <div class="card flex-fill">
+                                    <h5 class="card-header">Best customers custom
+                                        <form action="" method="get">
+                                            <label for="date1">From:</label>
+                                            <input type="date" id="date1" name="best_customers_date1" required>
+                                            <label for="date2">To:</label>
+                                            <input type="date" id="date2" name="best_customers_date2" required>
+                                            <input type="submit" value="Submit">
+                                        </form>
+                                    </h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">Phone Number</th>
+                                                        <th class="border-0">Buy</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
                                                     {% for customer in best_customers_custom %}
-                                                        <tr>
-                                                            <td>{{ customer.0 }} </td>
-                                                            <td>{{ customer.1 }}</td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td>{{ customer.0 }} </td>
+                                                        <td>{{ customer.1 }}</td>
+                                                    </tr>
                                                     {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-        
-                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
-                                    <div class="card flex-fill">
-                                        <h5 class="card-header"> Most sold categories Custom
-                                            <form action="" method="get">
-                                                <label for="date1">From:</label>
-                                                <input type="date" id="date1" name="best_categories_date1" required>
-                                                <label for="date2">To:</label>
-                                                <input type="date" id="date2" name="best_categories_date2" required>
-                                                <input type="submit" value="Submit">
-                                            </form>
-                                        </h5>
-                                        <div class="card-body">
-                                            <canvas id="bestCategoriesChartCustom"></canvas>
-                                        </div>
+                            </div>
+
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
+                                <div class="card flex-fill">
+                                    <h5 class="card-header"> Most sold categories Custom
+                                        <form action="" method="get">
+                                            <label for="date1">From:</label>
+                                            <input type="date" id="date1" name="best_categories_date1" required>
+                                            <label for="date2">To:</label>
+                                            <input type="date" id="date2" name="best_categories_date2" required>
+                                            <input type="submit" value="Submit">
+                                        </form>
+                                    </h5>
+                                    <div class="card-body">
+                                        <canvas id="bestCategoriesChartCustom"></canvas>
                                     </div>
                                 </div>
-                                
-        
-                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
-                                    <div class="card flex-fill">
-                                        <h5 class="card-header">Orders By Personnel(Default: All)
+                            </div>
+
+
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
+                                <div class="card flex-fill">
+                                    <h5 class="card-header">Orders By Personnel(Default: All)
                                         <form action="" method="get">
                                             <label for="date1">From:</label>
                                             <input type="date" id="date1" name="orders_personnel_date1" required>
@@ -233,20 +236,20 @@
                                             <input type="date" id="date2" name="orders_personnel_date2" required>
                                             <input type="submit" value="Submit">
                                         </form>
-          
+
                                     </h5>
-                                        <div class="card-body">
-                                            <canvas id="ordersPersonnelChart"></canvas>
-                                        </div>
+                                    <div class="card-body">
+                                        <canvas id="ordersPersonnelChart"></canvas>
                                     </div>
                                 </div>
-                                </div>
+                            </div>
+                        </div>
 
 
-                            <!-- ============================================================== -->
-                            <!-- End Custom Customer&Category and get count personnel  -->
-                            <!-- ============================================================== -->
-                            <div class="row  mb-2">
+                        <!-- ============================================================== -->
+                        <!-- End Custom Customer&Category and get count personnel  -->
+                        <!-- ============================================================== -->
+                        <div class="row  mb-2">
                             <a id="order-by-status"></a>
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
                                 <div class="card flex-fill">
@@ -286,11 +289,11 @@
                         </div>
                         {% endif %}
 
-                            <!-- ============================================================== -->
-                                   <!-- End Status and Peak  -->
-                            <!-- ============================================================== -->
+                        <!-- ============================================================== -->
+                        <!-- End Status and Peak  -->
+                        <!-- ============================================================== -->
 
- <!-- recent orders  -->
+                        <!-- recent orders  -->
                         <!-- ============================================================== -->
 
                         <div class="row">
@@ -310,8 +313,9 @@
                                                         <th class="border-0">Details</th>
                                                         <th class="border-0">Accept</th>
                                                         <th class="border-0">Reject</th>
-                                                        {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
-                                                        {% if not order.paid  %}
+                                                        {% if user|user_in_group:"manager" or
+                                                        user|user_in_group:"cashier" %}
+                                                        {% if not order.paid %}
                                                         <th class="border-0">Paid</th>
                                                         {% endif %}
                                                         {% endif %}
@@ -325,20 +329,27 @@
                                                         <td>{{ order.create_time }}</td>
                                                         <td>{{ order.customer }} </td>
                                                         <td>
-                                                            <span class="badge-dot {% if order.status == 'p' %}badge-brand {% elif order.status == 'r' %}badge-danger {% else %} badge-success {% endif %}mr-1"></span>
-                                                            {% if order.status == 'p' %}Pending {% elif order.status == 'r' %}Rejected {% else %} Accepted {% endif %}
+                                                            <span
+                                                                class="badge-dot {% if order.status == 'p' %}badge-brand {% elif order.status == 'r' %}badge-danger {% else %} badge-success {% endif %}mr-1"></span>
+                                                            {% if order.status == 'p' %}Pending {% elif order.status ==
+                                                            'r' %}Rejected {% else %} Accepted {% endif %}
                                                         </td>
-                                                        <td><a href="{% url 'accounts:order_detail' order.pk %}" class="btn btn-primary"> details </a></td>
+                                                        <td><a href="{% url 'accounts:order_detail' order.pk %}"
+                                                                class="btn btn-primary"> details </a></td>
                                                         {% if order.status == 'p' %}
-                                                            <td><a href="{% url 'orders:order_accept' order.pk %}" class="btn btn-success">accept</a></td>
-                                                            <td><a href="{% url 'orders:order_reject' order.pk %}" class="btn btn-danger">reject</a></td>
+                                                        <td><a href="{% url 'orders:order_accept' order.pk %}"
+                                                                class="btn btn-success">accept</a></td>
+                                                        <td><a href="{% url 'orders:order_reject' order.pk %}"
+                                                                class="btn btn-danger">reject</a></td>
                                                         {% else %}
-                                                            <td></td>
-                                                            <td></td>
+                                                        <td></td>
+                                                        <td></td>
                                                         {% endif %}
-                                                        {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
-                                                        {% if not order.paid  %}
-                                                        <td><a href="{% url 'orders:order_paid' order.pk %}" class="btn btn-success">paid</a></td>
+                                                        {% if user|user_in_group:"manager" or
+                                                        user|user_in_group:"cashier" %}
+                                                        {% if not order.paid %}
+                                                        <td><a href="{% url 'orders:order_paid' order.pk %}"
+                                                                class="btn btn-outline-success">paid</a></td>
                                                         {% else %}
                                                         <td></td>
                                                         {% endif %}
@@ -348,7 +359,9 @@
                                                     </tr>
                                                     {% endfor %}
                                                     <tr>
-                                                        <td colspan="9"><a href="{% url 'accounts:orders_dashboard' %}" class="btn btn-outline-light float-right">View Details</a></td>
+                                                        <td colspan="9"><a href="{% url 'accounts:orders_dashboard' %}"
+                                                                class="btn btn-outline-light float-right">View
+                                                                Details</a></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -357,24 +370,24 @@
                                 </div>
                             </div>
                         </div>
-                            <!-- ============================================================== -->
-                            <!-- end recent orders  -->
+                        <!-- ============================================================== -->
+                        <!-- end recent orders  -->
 
 
                     </div>
-                    
-                    
-                    
-                    </div>
-                            
-                        </div>
-                    </div>
+
+
+
                 </div>
+
             </div>
         </div>
-        <!-- ============================================================== -->
-        <!-- end wrapper  -->
-        <!-- ============================================================== -->
+    </div>
+    </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end wrapper  -->
+    <!-- ============================================================== -->
     </div>
     <!-- ============================================================== -->
     <!-- end main wrapper  -->
@@ -426,10 +439,10 @@
             }
         });
 
-// --------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
 
 
-var ctx = document.getElementById("ordersPersonnelChart").getContext("2d");
+        var ctx = document.getElementById("ordersPersonnelChart").getContext("2d");
         var ordersPersonnelData = JSON.parse('{{ each_personnel_count|safe }}');
         console.log(ordersPersonnelData)
         var labels = Object.keys(ordersPersonnelData);
@@ -464,7 +477,7 @@ var ctx = document.getElementById("ordersPersonnelChart").getContext("2d");
 
 
 
-// --------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
 
 
         var ctx = document.getElementById("bestCategoriesChartAll").getContext("2d");
@@ -496,9 +509,9 @@ var ctx = document.getElementById("ordersPersonnelChart").getContext("2d");
             }
         });
 
-// --------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
 
-var ctx = document.getElementById("bestCategoriesChartYear").getContext("2d");
+        var ctx = document.getElementById("bestCategoriesChartYear").getContext("2d");
         var bestCategoriesYear = JSON.parse('{{ best_categories_year|safe }}');
         var labels = Object.keys(bestCategoriesYear);
         var data = Object.values(bestCategoriesYear);
@@ -527,9 +540,9 @@ var ctx = document.getElementById("bestCategoriesChartYear").getContext("2d");
             }
         });
 
-// --------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
 
-var ctx = document.getElementById("bestCategoriesChartMonth").getContext("2d");
+        var ctx = document.getElementById("bestCategoriesChartMonth").getContext("2d");
         var bestCategoriesMonth = JSON.parse('{{ best_categories_month|safe }}');
         var labels = Object.keys(bestCategoriesMonth);
         var data = Object.values(bestCategoriesMonth);
@@ -558,9 +571,9 @@ var ctx = document.getElementById("bestCategoriesChartMonth").getContext("2d");
             }
         });
 
-// --------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
 
-var ctx = document.getElementById("bestCategoriesChartWeek").getContext("2d");
+        var ctx = document.getElementById("bestCategoriesChartWeek").getContext("2d");
         var bestCategoriesWeek = JSON.parse('{{ best_categories_week|safe }}');
         var labels = Object.keys(bestCategoriesWeek);
         var data = Object.values(bestCategoriesWeek);
@@ -589,9 +602,9 @@ var ctx = document.getElementById("bestCategoriesChartWeek").getContext("2d");
             }
         });
 
-// --------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
 
-var ctx = document.getElementById("bestCategoriesChartCustom").getContext("2d");
+        var ctx = document.getElementById("bestCategoriesChartCustom").getContext("2d");
         var bestCategoriesCustom = JSON.parse('{{ best_categories_custom|safe }}');
         var labels = Object.keys(bestCategoriesCustom);
         var data = Object.values(bestCategoriesCustom);
@@ -620,33 +633,33 @@ var ctx = document.getElementById("bestCategoriesChartCustom").getContext("2d");
             }
         });
 
-// --------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------
 
 
-    var ctx = document.getElementById('ordersStatusChart').getContext('2d');
-    var ordersStatusData = JSON.parse('{{ orders_count_by_status|safe }}');
-    var labels = Object.keys(ordersStatusData);
-    var values = Object.values(ordersStatusData);
+        var ctx = document.getElementById('ordersStatusChart').getContext('2d');
+        var ordersStatusData = JSON.parse('{{ orders_count_by_status|safe }}');
+        var labels = Object.keys(ordersStatusData);
+        var values = Object.values(ordersStatusData);
 
-    var myPieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: values,
-                backgroundColor: ['green', 'orange', 'red'], // Add your desired colors
-            }],
-            labels: labels,
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-        }
-    });
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: values,
+                    backgroundColor: ['green', 'orange', 'red'], // Add your desired colors
+                }],
+                labels: labels,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
 
 
     </script>
     <script src="{% static 'accounts/assets/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'accounts/assets/vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
 </body>
- 
+
 </html>
