@@ -160,6 +160,66 @@ class AddOrderViewTest(TestCase):
         self.assertEqual(session[str(order.id)][1], 20.00)
         self.assertEqual(session[str(order.id)][2], self.customer.phone_number)
 
+class ReOrderViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.table = baker.make(Table, table_number=1)
+        cls.product = baker.make(Product, name="Test Product", price=10.00)
+        cls.customer = baker.make(Customer, phone_number="09121111111")
+        cls.order = baker.make(Order, id=1, table=cls.table, customer=cls.customer)
+        cls.orderitem = baker.make(
+            OrderItem,
+            id=1,
+            order=cls.order,
+            product=cls.product,
+            quantity=2,
+            price=10.00,
         )
-        self.assertNotIn(self.client.COOKIES["cart"], self.client.cookies)
-"""
+
+    def test_get(self):
+        session_data = {
+            "orders_info": {
+                "1": [
+                    {"key1": "value1"},
+                    {"key2": "value2"},
+                    [1234567890],
+                ],
+                "2": [
+                    {"key3": "value3"},
+                    {"key4": "value4"},
+                    [9876543210],
+                ],
+            }
+        }
+        session = self.client.session
+        session.update(session_data)
+        session.save()
+        url = reverse("orders:reorder", args=[self.order.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "orders/reorder.html")
+        expected_initial = {"phone_number": [9876543210]}
+        self.assertEqual(response.context["form"].initial, expected_initial)
+
+    def test_post(self):
+        url = reverse("orders:reorder", args=[self.order.id])
+        response = self.client.post(
+            url,
+            data={
+                "phone_number": self.customer.phone_number,
+                "table_number": self.table.table_number,
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        session = self.client.session.get("orders_info")
+        self.assertEqual(len(session), 1)
+
+        order = Order.objects.last()
+        order_item = OrderItem.objects.last()
+
+        self.assertEqual(session[str(order.id)][0]["price"], 10.00)
+        self.assertEqual(session[str(order.id)][0]["quantity"], 2)
+        self.assertEqual(session[str(order.id)][0]["sub_total"], 20.00)
+        self.assertEqual(session[str(order.id)][1], 20.00)
+        self.assertEqual(session[str(order.id)][2], self.customer.phone_number)
