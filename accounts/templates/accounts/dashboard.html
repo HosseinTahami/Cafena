@@ -313,8 +313,7 @@
                                                         <th class="border-0">Details</th>
                                                         <th class="border-0">Accept</th>
                                                         <th class="border-0">Reject</th>
-                                                        {% if user|user_in_group:"manager" or
-                                                        user|user_in_group:"cashier" %}
+                                                        {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
                                                         {% if not order.paid %}
                                                         <th class="border-0">Paid</th>
                                                         {% endif %}
@@ -331,8 +330,7 @@
                                                         <td>
                                                             <span
                                                                 class="badge-dot {% if order.status == 'p' %}badge-brand {% elif order.status == 'r' %}badge-danger {% else %} badge-success {% endif %}mr-1"></span>
-                                                            {% if order.status == 'p' %}Pending {% elif order.status ==
-                                                            'r' %}Rejected {% else %} Accepted {% endif %}
+                                                            {% if order.status == 'p' %}Pending {% elif order.status == 'r' %}Rejected {% else %} Accepted {% endif %}
                                                         </td>
                                                         <td><a href="{% url 'accounts:order_detail' order.pk %}"
                                                                 class="btn btn-primary"> details </a></td>
@@ -345,8 +343,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         {% endif %}
-                                                        {% if user|user_in_group:"manager" or
-                                                        user|user_in_group:"cashier" %}
+                                                        {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
                                                         {% if not order.paid %}
                                                         <td><a href="{% url 'orders:order_paid' order.pk %}"
                                                                 class="btn btn-outline-success">paid</a></td>
