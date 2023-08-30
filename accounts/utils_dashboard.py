@@ -122,6 +122,8 @@ class MostSellerProducts:
         return products_dict
 
     def most_seller_products_today(self, number=None):
+        if number == None:
+            number = self.number
         filtered_products = Product.objects.filter(
             orderitem__order__create_time__date=DateVars.current_date
         )
