@@ -87,16 +87,35 @@ class UserVerifyView(View):
             )
             if user is not None:
                 login(request, user)
-                messages.success(request, "Logged in Successfully", "success")
+                messages.success(
+                    request,
+                    f"{request.user.full_name}\n Logged In Successfully",
+                    "success",
+                )
                 return redirect("accounts:dashboard")
             else:
-                messages.error(request, "The code or phone_number is wrong!", "error")
+                messages.error(
+                    request,
+                    "The OTP or Phone Number is wrong please check again.",
+                    "error",
+                )
                 return redirect("accounts:verify_personnel")
 
 
 class UserLogoutView(View):
     def get(self, request):
-        logout(request)
+        if not request.user.is_authenticated:
+            messages.error(
+                request, "Logged Out Failed:\n You're not Logged In", "danger"
+            )
+            return redirect("accounts:login")
+        else:
+            messages.success(
+                request,
+                f"{request.user.full_name}\n Logged Out Successfully",
+                "warning",
+            )
+            logout(request)
         return redirect("cafe:home")
 
 
@@ -106,15 +125,16 @@ class DashboardView(LoginRequiredMixin, View):
         context = context_instance(request)
         # dynamic data
         page_data = Dashboard.get_page_date("Dashboard_Page")
-        context['page_data'] = page_data
+        context["page_data"] = page_data
         return render(request, "accounts/dashboard.html", context=context)
 
 
 class SalesDashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
-    required_group = 'manager'
+    required_group = "manager"
+
     def test_func(self):
         return self.request.user.groups.filter(name=self.required_group).exists()
-    
+
     def handle_no_permission(self):
         return redirect("accounts:dashboard")
 
@@ -123,7 +143,7 @@ class SalesDashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
         context = context_instance(request)
         # dynamic data
         page_data = Dashboard.get_page_date("Dashboard_Page")
-        context['page_data'] = page_data
+        context["page_data"] = page_data
         return render(request, "accounts/sales_dashboard.html", context=context)
 
 
@@ -136,9 +156,10 @@ class OrdersDashboardView(LoginRequiredMixin, TemplateView):
         orders_with_costs_custom = context_instance(self.request)
         context["orders_with_costs_custom"] = orders_with_costs_custom
         page_data = Dashboard.get_page_date("Dashboard_Page")
-        context['page_data'] = page_data
+        context["page_data"] = page_data
 
         return context
+
 
 class OrderDetailView(LoginRequiredMixin, View):
     form_class = OrderItemForm
@@ -161,8 +182,12 @@ class OrderDetailView(LoginRequiredMixin, View):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            if OrderItem.objects.filter(order=self.order,product=cd["product"]).exists():
-                orderitem = OrderItem.objects.get(order=self.order,product=cd["product"])
+            if OrderItem.objects.filter(
+                order=self.order, product=cd["product"]
+            ).exists():
+                orderitem = OrderItem.objects.get(
+                    order=self.order, product=cd["product"]
+                )
                 orderitem.quantity += cd["quantity"]
                 orderitem.save()
             else:
@@ -172,4 +197,3 @@ class OrderDetailView(LoginRequiredMixin, View):
                 new_orderitem.save()
 
         return redirect("accounts:order_detail", pk)
-

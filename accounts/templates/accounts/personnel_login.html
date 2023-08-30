@@ -3,43 +3,62 @@
 <html lang="en">
 
 <head>
-    <title>Personnel Login</title>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'accounts/assets/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link href="{% static 'accounts/assets/vendor/fonts/circular-std/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'accounts/assets/libs/css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'accounts/assets/vendor/fonts/fontawesome/css/fontawesome-all.css' %}">
     <style>
+        html,
+        body {
+            height: 100%;
+        }
 
         body {
-            background-image: url("{% static 'images/background_login/login.jpg' %}");
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
         }
     </style>
 </head>
 
-<body class="img js-fullheight vh-100">
-    <section class="ftco-section d-flex justify-content-center align-items-center h-75">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-
-                </div>
-                <div class="col-lg-6">
-                    <div class="col-md-6 col-lg-8">
-                        <div class="login-wrap p-0">
-                            <form action="{% url 'accounts:login' %}" class="signin-form" method="post">
-                                    {% csrf_token %}
-                                    {{ form.phone_number }}
-                                    <button type="submit" class="form-control btn btn-primary submit px-3">Login</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
+<body>
+    <!-- ============================================================== -->
+    <!-- login page  -->
+    <!-- ============================================================== -->
+    <div class="splash-container">
+        <div class="card bg-gradient">
+            <div class="card-header text-center"><span class="splash-description">
+                    <h4>Personnel Login</h4>
+                </span></div>
+            <div class="card-body">
+                <form action="{% url 'accounts:login' %}" class="" method="post">
+                    {% csrf_token %}
+                    {{ form.phone_number }}
+                    <button type="submit" class="btn btn-lg btn-block btn-primary">Sign in</button>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- end login page  -->
+    <!-- ============================================================== -->
+    <!-- Optional JavaScript -->
+    <script src="{% static 'accounts/assets/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'accounts/assets/vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
 </body>
 
 </html>

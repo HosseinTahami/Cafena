@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
-from .views import ReorderView
-from .models import Table, Order, OrderItem
+from ..views import ReorderView, OrdersHistoryView
+from ..models import Table, Order, OrderItem
 from accounts.models import Customer
 from cafe.models import Product
 import json
@@ -9,7 +9,6 @@ import urllib.parse
 from model_bakery import baker
 from accounts.models import Personnel
 from django.contrib.sessions.middleware import SessionMiddleware
-from .views import OrdersHistoryView
 
 
 class CheckoutViewTest(TestCase):
