@@ -94,7 +94,11 @@ class UserVerifyView(View):
                 )
                 return redirect("accounts:dashboard")
             else:
-                messages.error(request, "The code or phone_number is wrong!", "error")
+                messages.error(
+                    request,
+                    "The OTP or Phone Number is wrong please check again.",
+                    "error",
+                )
                 return redirect("accounts:verify_personnel")
 
 
