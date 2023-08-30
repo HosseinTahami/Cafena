@@ -5,49 +5,53 @@ from orders.forms import CartAddForm
 from dynamic.models import PageData
 from cafe.views import HomeView, ProductDetailView
 from model_bakery import baker
+from ..models import Contact
+from model_bakery import baker
 
-class ViewsTestCase(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.factory = RequestFactory()
-    
+
+class HomeViewTest(TestCase):
     def setUp(self):
         self.category = Category.objects.create(name="Test Category")
-        # self.product = Product.objects.create(
-        #     name="Test Product",
-        #     category=self.category,
-        #     price=10.0,
-        # )
-        self.product = baker.make(Product, _create_files=True)
+        self.product1 = baker.make(Product, name="pizza", _create_files=True, category=self.category)
+        self.product2 = baker.make(Product, name="sandwich", _create_files=True, category=self.category)
 
-    
-def test_home_view(self):
-    url = reverse("your_actual_url_name_here")  # Replace with the actual URL name
-    request = self.factory.get(url)
-    response = HomeView.as_view()(request)
+    def test_home_view_searched(self):
+        response = self.client.get("/?searched=pizza")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["all_categories"]), 1)
+        self.assertEqual(len(response.context["all_products"]), 1)
+        self.assertIsInstance(response.context["form"], CartAddForm)
+        self.assertIsInstance(response.context["page_data"], PageData)
 
-    self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, "cafe/home.html")
+    def test_home_view_not_searched(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["all_categories"]), 1)
+        self.assertEqual(len(response.context["all_products"]), 2)
+        self.assertIsInstance(response.context["form"], CartAddForm)
+        self.assertIsInstance(response.context["page_data"], PageData)
 
-    self.assertEqual(len(response.context["all_categories"]), 1)
-    self.assertEqual(len(response.context["all_products"]), 1)
-    self.assertIsInstance(response.context["form"], CartAddForm)
-    self.assertIsInstance(response.context["page_data"], PageData)
-    
-    def test_product_detail_view(self):
-        url = reverse("product_detail", kwargs={"pk": self.product.pk})
-        request = self.factory.get(url)
-        response = ProductDetailView.as_view()(request, pk=self.product.pk)
-    
+    def tearDown(self):
+        self.product1.delete()
+        self.product2.delete()
+        self.category.delete() 
+
+class ProductDetailViewTest(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Test Category")
+        self.product1 = baker.make(Product, name="pizza", _create_files=True)
+
+    def test_product_detail_get(self):
+        url = reverse("cafe:product_detail", args=[self.product1.id])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "cafe/product_detail.html")
-    
-        self.assertIn("product", response.context)
         self.assertIsInstance(response.context["product"], Product)
         self.assertIsInstance(response.context["form"], CartAddForm)
-    
+
     def tearDown(self):
+        self.product1.delete()
+
 class AboutViewTest(TestCase):
     def test_about_view_get(self):
         url = reverse("cafe:about")
