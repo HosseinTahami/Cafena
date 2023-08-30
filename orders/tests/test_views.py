@@ -81,38 +81,42 @@ class OrderAcceptTest(TestCase):
         self.assertEqual(updated_order.personnel, self.personnel)
 
 
-"""
 class OrdersHistoryViewTest(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = baker.make(Personnel)
-        self.order = baker.make(Order)
+    @classmethod
+    def setUpTestData(cls):
+        cls.factory = RequestFactory()
+        cls.user = baker.make(Personnel)
+        cls.order1 = baker.make(Order, id=1)
+        cls.order2 = baker.make(Order, id=2)
 
     def test_get_with_orders(self):
-        request = self.factory.get("orders:order_history")
-        request.user = self.user
-        middleware = SessionMiddleware(get_response=None)
-        middleware.process_request(request)
-        request.session.save()
-        request.session["orders_info"] = {self.order.id: "some_value"}
-        request.session.save()
-
-        response = OrdersHistoryView.as_view()(request)
-
+        session_data = {
+            "orders_info": {
+                "1": [
+                    {"key1": "value1"},
+                    {"key2": "value2"},
+                    [1234567890],
+                ],
+                "2": [
+                    {"key3": "value3"},
+                    {"key4": "value4"},
+                    [9876543210],
+                ],
+            }
+        }
+        session = self.client.session
+        session.update(session_data)
+        session.save()
+        response = self.client.get(reverse("orders:orders_history"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/orders_history.html")
-        self.assertContains(response, self.order.id)
+        self.assertEqual(len(response.context["orders"]), 2)
 
     def test_get_without_orders(self):
-        request = self.factory.get("/orders/history/")
-        request.user = self.user
-
-        response = OrdersHistoryView.as_view()(request)
-
+        response = self.client.get(reverse("orders:orders_history"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/orders_history.html")
-        self.assertNotContains(response, "orders:order_id")
-"""
+        self.assertIsNone(response.context["orders"])
 
 
 """
