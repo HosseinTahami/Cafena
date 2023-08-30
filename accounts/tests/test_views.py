@@ -39,6 +39,49 @@ class UserLoginViewTest(TestCase):
         self.assertTemplateUsed(response, "accounts/personnel_login.html")
 
 
+class UserVerifyViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        group = Group.objects.create(name="manager")
+        cls.personnel = baker.make(Personnel, phone_number="09123456789")
+        group.user_set.add(cls.personnel)
+
+    def test_valid_verify_post(self):
+        session_data = {
+            "personnel_verify": {
+                "phone_number": "09123456789",
+                "code": 1234,
+                "created_at": datetime.now(tz=pytz.timezone("Asia/Tehran")).isoformat(),
+            }
+        }
+        url = reverse("accounts:verify_personnel")
+        session = self.client.session
+        session.update(session_data)
+        session.save()
+        response = self.client.post(
+            url, data={"digit1": "1", "digit2": "2", "digit3": "3", "digit4": "4"}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("accounts:dashboard"))
+
+    def test_invalid_verify_post(self):
+        session_data = {
+            "personnel_verify": {
+                "phone_number": "09123456789",
+                "code": 1234,
+                "created_at": datetime.now(tz=pytz.timezone("Asia/Tehran")).isoformat(),
+            }
+        }
+        url = reverse("accounts:verify_personnel")
+        session = self.client.session
+        session.update(session_data)
+        session.save()
+        response = self.client.post(
+            url, data={"digit1": "1", "digit2": "2", "digit3": "3", "digit4": "5"}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("accounts:verify_personnel"))
+
 
 class ViewsTestCase(TestCase):
     @classmethod
