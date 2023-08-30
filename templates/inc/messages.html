@@ -10,17 +10,7 @@
     </div>
     {% endfor %}
 </div>
-<script>
-    setTimeout(function () {
-        var messageContainers = document.getElementsByClassName('alert');
-        for (var i = 0; i < messageContainers.length; i++) {
-            var messageContainer = messageContainers[i];
-            messageContainer.style.display = 'none';
-        }
-    }, 5000);
-</script>
 {% endif %}
-
 
 <style>
     #message-container {
@@ -59,9 +49,7 @@
     }
 
     .progress {
-        position: absolute;
-        top: 100%;
-        left: 0;
+        position: relative;
         width: 100%;
         height: 5px;
         margin-top: 5px;
@@ -70,8 +58,21 @@
     }
 
     .progress-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
         height: 100%;
         background-color: #333;
-        transition: width 7s linear;
+        animation: progress-animation 5s linear;
+    }
+
+    @keyframes progress-animation {
+        0% {
+            width: 0%;
+        }
+
+        100% {
+            width: 100%;
+        }
     }
 </style>
