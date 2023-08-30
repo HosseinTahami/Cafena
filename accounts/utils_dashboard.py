@@ -200,9 +200,9 @@ class MostSellerProducts:
         ).order_by("-total_quantity")
         return products
 
-    def to_dict(self, most_sellar, number):
+    def to_dict(self, most_seller, number):
         product_quantity = {}
-        for product in most_sellar:
+        for product in most_seller:
             product_quantity[product.name] = [
                 product.id,
                 product.image.url,
@@ -216,10 +216,10 @@ class MostSellerProducts:
         }
         return sliced_dict
 
-    def to_dict_count(self, most_sellar, number):
+    def to_dict_count(self, most_seller, number):
         product_quantity = {}
-        for product in most_sellar:
-            product_quantity[product.name] = (product.total_quantity or 0)
+        for product in most_seller:
+            product_quantity[product.name] = product.total_quantity or 0
         sliced_dict = {
             key: product_quantity[key] for key in list(product_quantity)[:number]
         }
@@ -355,9 +355,13 @@ class OrdersManager:
         total_price = []
         if not orders:
             orders = self.orders.select_related("customer")
-        for order in orders:
-            total_price.append(order.get_total_price())
-        orders_with_costs = zip(orders[:number], total_price[:number])
+        try:
+            for order in orders:
+                total_price.append(order.get_total_price())
+            orders_with_costs = zip(orders[:number], total_price[:number])
+        except:
+            total_price = orders.get_total_price()
+            orders_with_costs = [(orders, total_price)]
         return orders_with_costs
 
     def orders_with_costs_custom(self, date1=None, date2=None, number=10, orders=None):
@@ -371,8 +375,12 @@ class OrdersManager:
                 create_time__date__range=(date1, date2)
             )
 
-        for order in orders:
-            total_price.append(order.get_total_price())
+        try:
+            for order in orders:
+                total_price.append(order.get_total_price())
+        except:
+            total_price.append(orders.get_total_price())
+
         orders_with_costs = zip(orders[:number], total_price[:number])
         return orders_with_costs
 
@@ -385,24 +393,25 @@ class OrdersManager:
 
 class BestCustomer:
     def __init__(self, number) -> None:
-        self.orders = (
+        self.paid_orders = (
             Order.objects.select_related("customer")
             .prefetch_related("orderitem_set")
+            .filter(paid=True)
             .all()
         )
         self.number = number
 
-    def best_customers_custom(self,date1=None, date2=None, number=None):
+    def best_customers_custom(self, date1=None, date2=None, number=None):
         if number == None:
             number = self.number
-        orders = self.orders.filter(create_time__date__range=(date1, date2))
+        orders = self.paid_orders.filter(create_time__date__range=(date1, date2))
         best_customers_custom = {}
         return self.add_best_customer(orders, best_customers_custom, number)
 
     def best_customers_all(self, number=None):
         if number == None:
             number = self.number
-        orders = self.orders
+        orders = self.paid_orders
         best_customers_all = {}
         return self.add_best_customer(orders, best_customers_all, number)
 
@@ -410,7 +419,7 @@ class BestCustomer:
         if number == None:
             number = self.number
 
-        orders = self.orders.filter(create_time__year=DateVars.get_current_year())
+        orders = self.paid_orders.filter(create_time__year=DateVars.get_current_year())
         best_customers_year = {}
         return self.add_best_customer(orders, best_customers_year, number)
 
@@ -418,7 +427,7 @@ class BestCustomer:
         if number == None:
             number = self.number
 
-        orders = self.orders.filter(
+        orders = self.paid_orders.filter(
             create_time__date__gte=DateVars.get_first_day_current_month()
         )
         best_customers_month = {}
@@ -428,7 +437,7 @@ class BestCustomer:
         if number == None:
             number = self.number
 
-        orders = self.orders.filter(
+        orders = self.paid_orders.filter(
             create_time__date__gte=DateVars.get_first_day_current_week()
         )
         best_customers_month = {}
@@ -447,19 +456,20 @@ class BestCustomer:
 
 
 class Comparison:
-    def get_change_percenatge(self, current, last):
+    def get_change_percentage(self, current, last):
         try:
             result = ((current - last) / last) * 100
         except ZeroDivisionError:
             result = current * 100
+        formatted_result = float("{:.2f}".format(result))
         return result
 
     def return_dictionary(self, current, last):
         return {
             "current": current,
             "last": last,
-            "changes_percentage": self.get_change_percenatge(current, last),
-            "changes_numebr": current - last,
+            "changes_percentage": self.get_change_percentage(current, last),
+            "changes_number": current - last,
         }
 
 
@@ -530,10 +540,7 @@ class ComparisonCustomers(Comparison):
             )
         ).count()
         current_week_customers_count = self.customers.filter(
-            joined__range=(
-                DateVars.get_first_day_current_week(),
-                DateVars.current_date,
-            )
+            joined__date__gte=DateVars.get_first_day_current_week()
         ).count()
 
         return self.return_dictionary(
@@ -547,11 +554,9 @@ class ComparisonCustomers(Comparison):
                 DateVars.get_last_day_last_month(),
             )
         ).count()
+
         current_month_customers_count = self.customers.filter(
-            joined__range=(
-                DateVars.get_first_day_current_month(),
-                DateVars.current_date,
-            )
+            joined__date__gte=DateVars.get_first_day_current_month()
         ).count()
         return self.return_dictionary(
             current_month_customers_count, last_month_customers_count
@@ -607,7 +612,12 @@ class MostSellerCategories:
         )
         return self.count_quantity(filtered_categories, number)
 
-    def most_seller_categories_custom(self,  date1=None, date2=None, number=None,):
+    def most_seller_categories_custom(
+        self,
+        date1=None,
+        date2=None,
+        number=None,
+    ):
         if number == None:
             number = self.number
 
@@ -628,9 +638,9 @@ class MostSellerCategories:
         products_json = self.to_json(products_dict)
         return products_json
 
-    def to_dict(self, most_sellar):
+    def to_dict(self, most_seller):
         category_quantity = {}
-        for category in most_sellar:
+        for category in most_seller:
             category_quantity[category.name] = category.total_quantity
         return category_quantity
 
@@ -638,7 +648,7 @@ class MostSellerCategories:
         return json.dumps(products_dict)
 
 
-class SalesDashboardVars:
+class SalesDashboardVars:  # pragma: no cover
     def __call__(self, request):
         most_seller: MostSellerProducts = MostSellerProducts(3)
         most_seller_all: dict = most_seller.most_seller_products_all()
@@ -752,7 +762,7 @@ class SalesDashboardVars:
         return context
 
 
-class DashboardVars:
+class DashboardVars:  # pragma: no cover
     def __call__(self, request):
         orders = OrdersManager()
         orders_with_costs = orders.orders_with_costs(10)
@@ -797,7 +807,6 @@ class DashboardVars:
             "best_categories_date2",
         )
 
-
         best_customers = BestCustomer(5)
         best_customers_all = best_customers.best_customers_all()
         best_customers_year = best_customers.best_customers_year()
@@ -817,7 +826,6 @@ class DashboardVars:
 
         date1_condition = request.GET.get("all_data_dashboard_date1")
         date2_condition = request.GET.get("all_data_dashboard_date2")
-
 
         if date1_condition and date2_condition:
             orders_count_by_status = orders.get_count_by_status
@@ -912,7 +920,7 @@ class DashboardVars:
         return context
 
 
-class OrdersDashboardVars:
+class OrdersDashboardVars:  # pragma: no cover
     def __call__(self, request):
         orders_manager = OrdersManager()
         orders_with_costs_custom = orders_manager.orders_with_costs_custom

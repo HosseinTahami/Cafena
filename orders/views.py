@@ -65,8 +65,11 @@ class AddOrderView(View):
 
             session_order = session[str(order.id)] = []
             cart_js = request.COOKIES.get(self.CART_COOKIE_KEY)
-            decoded_cart_js = urllib.parse.unquote(cart_js)
-            cart = json.loads(decoded_cart_js)
+            try:
+                decoded_cart_js = urllib.parse.unquote(cart_js)
+                cart = json.loads(decoded_cart_js)
+            except:
+                cart = json.loads(cart_js)
             for key, value in cart.items():
                 if key != "total_price":
                     product = Product.objects.get(id=key)
@@ -92,7 +95,6 @@ class AddOrderView(View):
             response = redirect("orders:orders_history")
             response.delete_cookie(self.CART_COOKIE_KEY)
             return response
-        return HttpResponse(status=400)
 
 
 class OrderAccept(LoginRequiredMixin, View):

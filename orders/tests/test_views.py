@@ -15,32 +15,30 @@ class CheckoutViewTest(TestCase):
     def test_get(self):
         session_data = {
             "orders_info": {
-                "order1": [
+                "1": [
                     {"key1": "value1"},
                     {"key2": "value2"},
                     [1234567890],
                 ],
-                "order2": [
+                "2": [
                     {"key3": "value3"},
                     {"key4": "value4"},
                     [9876543210],
                 ],
             }
         }
-
-        self.client.session.update(session_data)
+        session = self.client.session
+        session.update(session_data)
+        session.save()
         url = reverse("orders:checkout")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/checkout.html")
-        # expected_initial = {"phone_number": [9876543210]}
-        # self.assertEqual(response.context["form"].initial, expected_initial)
+        expected_initial = {"phone_number": [9876543210]}
+        self.assertEqual(response.context["form"].initial, expected_initial)
 
 
 class CartViewTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-
     def test_cart_view(self):
         response = self.client.get(reverse("orders:cart"))
         self.assertEqual(response.status_code, 200)
@@ -48,10 +46,10 @@ class CartViewTest(TestCase):
 
 
 class OrderRejectTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.personnel = baker.make(Personnel)
-        self.order = baker.make(Order, personnel=self.personnel, status="p")
+    @classmethod
+    def setUpTestData(cls):
+        cls.personnel = baker.make(Personnel)
+        cls.order = baker.make(Order, personnel=cls.personnel, status="p")
 
     def test_order_rejection(self):
         self.client.force_login(self.personnel)
@@ -65,10 +63,10 @@ class OrderRejectTest(TestCase):
 
 
 class OrderAcceptTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.personnel = baker.make(Personnel)
-        self.order = baker.make(Order, personnel=self.personnel, status="p")
+    @classmethod
+    def setUpTestData(cls):
+        cls.personnel = baker.make(Personnel)
+        cls.order = baker.make(Order, personnel=cls.personnel, status="p")
 
     def test_order_rejection(self):
         self.client.force_login(self.personnel)
@@ -81,88 +79,146 @@ class OrderAcceptTest(TestCase):
         self.assertEqual(updated_order.personnel, self.personnel)
 
 
-"""
 class OrdersHistoryViewTest(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.user = baker.make(Personnel)
-        self.order = baker.make(Order)
+    @classmethod
+    def setUpTestData(cls):
+        cls.factory = RequestFactory()
+        cls.user = baker.make(Personnel)
+        cls.order1 = baker.make(Order, id=1)
+        cls.order2 = baker.make(Order, id=2)
 
     def test_get_with_orders(self):
-        request = self.factory.get("orders:order_history")
-        request.user = self.user
-        middleware = SessionMiddleware(get_response=None)
-        middleware.process_request(request)
-        request.session.save()
-        request.session["orders_info"] = {self.order.id: "some_value"}
-        request.session.save()
-
-        response = OrdersHistoryView.as_view()(request)
-
+        session_data = {
+            "orders_info": {
+                "1": [
+                    {"key1": "value1"},
+                    {"key2": "value2"},
+                    [1234567890],
+                ],
+                "2": [
+                    {"key3": "value3"},
+                    {"key4": "value4"},
+                    [9876543210],
+                ],
+            }
+        }
+        session = self.client.session
+        session.update(session_data)
+        session.save()
+        response = self.client.get(reverse("orders:orders_history"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/orders_history.html")
-        self.assertContains(response, self.order.id)
+        self.assertEqual(len(response.context["orders"]), 2)
 
     def test_get_without_orders(self):
-        request = self.factory.get("/orders/history/")
-        request.user = self.user
-
-        response = OrdersHistoryView.as_view()(request)
-
+        response = self.client.get(reverse("orders:orders_history"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/orders_history.html")
-        self.assertNotContains(response, "orders:order_id")
-"""
+        self.assertIsNone(response.context["orders"])
 
 
-"""
 class AddOrderViewTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.add_order_url = reverse("orders:add_order")
-        self.table = baker.make(Table, table_number=1)
-        self.product = baker.make(Product, name="Test Product", price=10.00)
-        self.customer = baker.make(Customer)
-        self.order = baker.make(Order, table=self.table, customer=self.customer)
-        self.orderitem = baker.make(OrderItem, order=self.order, product=self.product)
-        self.customer = baker.make(Customer)
-        self.cart = {
-            "1": {
-                "name": "Test Product",
-                "price": "10.00",
-                "quantity": 2,
-                "sub_total": "20.00",
-            },
-            "total_price": "20.00",
-        }
+    @classmethod
+    def setUpTestData(cls):
+        cls.table = baker.make(Table, table_number=1)
+        # cls.product = baker.make(Product, name="Test Product", price=10.00)
+        cls.customer = baker.make(Customer, phone_number="09121111111")
+        cls.cart = json.dumps(
+            {
+                "1": {
+                    "name": "Test Product",
+                    "price": 10.00,
+                    "quantity": 2,
+                    "sub_total": 20.00,
+                },
+                "total_price": 20.00,
+            }
+        )
 
     def test_post(self):
-        session = self.client.session
-        session["orders_info"] = {}
-        session.save()
-        self.client.cookies["cart"] = urllib.parse.quote(json.dumps(self.cart))
+        self.client.cookies["cart"] = self.cart
         response = self.client.post(
             reverse("orders:add_order"),
-            {
+            data={
                 "phone_number": self.customer.phone_number,
                 "table_number": self.table.table_number,
             },
         )
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(Order.objects.count(), 1)
-        self.assertEqual(OrderItem.objects.count(), 1)
-        self.assertEqual(len(session["orders_info"]), 1)
+        self.assertEqual(response.status_code, 302)
+        session = self.client.session.get("orders_info")
+        self.assertEqual(len(session), 1)
 
         order = Order.objects.first()
         order_item = OrderItem.objects.first()
 
-        self.assertEqual(session["orders_info"][str(order.id)][0]["price"], "10.00")
-        self.assertEqual(session["orders_info"][str(order.id)][0]["quantity"], 2)
-        self.assertEqual(session["orders_info"][str(order.id)][0]["sub_total"], "20.00")
-        self.assertEqual(session["orders_info"][str(order.id)][1], "20.00")
-        self.assertEqual(
-            session["orders_info"][str(order.id)][2], self.customer.phone_number
+        self.assertEqual(session[str(order.id)][0]["price"], 10.00)
+        self.assertEqual(session[str(order.id)][0]["quantity"], 2)
+        self.assertEqual(session[str(order.id)][0]["sub_total"], 20.00)
+        self.assertEqual(session[str(order.id)][1], 20.00)
+        self.assertEqual(session[str(order.id)][2], self.customer.phone_number)
+
+
+class ReOrderViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.table = baker.make(Table, table_number=1)
+        cls.product = baker.make(Product, name="Test Product", price=10.00)
+        cls.customer = baker.make(Customer, phone_number="09121111111")
+        cls.order = baker.make(Order, id=1, table=cls.table, customer=cls.customer)
+        cls.orderitem = baker.make(
+            OrderItem,
+            id=1,
+            order=cls.order,
+            product=cls.product,
+            quantity=2,
+            price=10.00,
         )
-        self.assertNotIn(self.client.COOKIES["cart"], self.client.cookies)
-"""
+
+    def test_get(self):
+        session_data = {
+            "orders_info": {
+                "1": [
+                    {"key1": "value1"},
+                    {"key2": "value2"},
+                    [1234567890],
+                ],
+                "2": [
+                    {"key3": "value3"},
+                    {"key4": "value4"},
+                    [9876543210],
+                ],
+            }
+        }
+        session = self.client.session
+        session.update(session_data)
+        session.save()
+        url = reverse("orders:reorder", args=[self.order.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "orders/reorder.html")
+        expected_initial = {"phone_number": [9876543210]}
+        self.assertEqual(response.context["form"].initial, expected_initial)
+
+    def test_post(self):
+        url = reverse("orders:reorder", args=[self.order.id])
+        response = self.client.post(
+            url,
+            data={
+                "phone_number": self.customer.phone_number,
+                "table_number": self.table.table_number,
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        session = self.client.session.get("orders_info")
+        self.assertEqual(len(session), 1)
+
+        order = Order.objects.last()
+        order_item = OrderItem.objects.last()
+
+        self.assertEqual(session[str(order.id)][0]["price"], 10.00)
+        self.assertEqual(session[str(order.id)][0]["quantity"], 2)
+        self.assertEqual(session[str(order.id)][0]["sub_total"], 20.00)
+        self.assertEqual(session[str(order.id)][1], 20.00)
+        self.assertEqual(session[str(order.id)][2], self.customer.phone_number)
