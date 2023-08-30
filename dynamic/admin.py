@@ -34,8 +34,8 @@ class PageDataAdmin(admin.ModelAdmin):
 @admin.register(Footer)
 class FooterAdmin(admin.ModelAdmin):
     readonly_fields = ["logo_preview"]
-    list_display = ("footer_name", "footer_phone", "footer_email", "logo_preview")
-    search_fields = ("footer_name", "footer_phone", "footer_email")
+    list_display = ("footer_name", "footer_phone", "logo_preview")
+    search_fields = ("footer_name", "footer_phone", "footer_text")
 
     fieldsets = (
         (
@@ -45,7 +45,7 @@ class FooterAdmin(admin.ModelAdmin):
                     "footer_name",
                     "footer_phone",
                     ("footer_logo", "logo_preview"),
-                    "footer_email",
+                    "footer_address",
                     "footer_text",
                 )
             },
