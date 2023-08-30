@@ -1,10 +1,44 @@
-from django.test import TestCase, RequestFactory, Client
-from django.urls import reverse
-from cafe.models import Category, Product
-from orders.forms import CartAddForm
-from dynamic.models import PageData
-from cafe.views import HomeView, ProductDetailView
+from django.test import TestCase, Client, RequestFactory
+from django.shortcuts import reverse
+from ..forms import UserCustomerLoginForm, OTPForm
+from ..views import UserVerifyView
+from ..models import Personnel
+from django.contrib.auth import get_user
+from django.contrib.auth.models import AnonymousUser
 from model_bakery import baker
+from datetime import datetime
+import pytz
+from django.contrib.auth.models import Group
+from orders.models import OrderItem, Order
+from cafe.models import Product
+from ..forms import OrderItemForm
+
+
+class UserLoginViewTest(TestCase):
+    def test_user_get_view(self):
+        response = self.client.get(reverse("accounts:login"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/personnel_login.html")
+        self.assertIsInstance(response.context["form"], UserCustomerLoginForm)
+
+    def test_user_valid_post_view(self):
+        form_data = {"phone_number": "09123456789"}
+        response = self.client.post(reverse("accounts:login"), data=form_data)
+        session = self.client.session["personnel_verify"]
+        self.assertEqual(session["phone_number"], "09123456789")
+        self.assertTrue(1000 <= session["code"] <= 9999)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("accounts:verify_personnel"))
+
+    def test_user_not_valid_post_view(self):
+        form_data = {"phone_number": "11111111111"}
+        form = UserCustomerLoginForm(data=form_data)
+        response = self.client.post(reverse("accounts:login"), data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/personnel_login.html")
+
+
 
 class ViewsTestCase(TestCase):
     @classmethod
