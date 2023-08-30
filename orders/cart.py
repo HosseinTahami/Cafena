@@ -31,6 +31,7 @@ class Cart:
                 "quantity": quantity,
                 "price": float(product.price),
                 "sub_total": float(quantity * product.price),
+                # "product_img": product.image,
             }
         else:
             self.cart[product_id]["quantity"] += quantity
