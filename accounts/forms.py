@@ -6,6 +6,8 @@ from django import forms
 from .models import Personnel
 from orders.models import OrderItem
 
+import re
+
 
 class PersonnelCreationForm(UserCreationForm):
     class Meta:
@@ -30,6 +32,12 @@ class UserCustomerLoginForm(forms.Form):
         )
     )
 
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data["phone_number"]
+        if not re.match(r"09(1[0-9]|3[1-9]|2[1-9])[0-9]{7}", phone_number):
+            raise forms.ValidationError("Phone number is not valid!")
+        return phone_number
+
 
 class OTPForm(forms.Form):
     digit1 = forms.CharField(
@@ -49,4 +57,4 @@ class OTPForm(forms.Form):
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
-        exclude = ["order","price"]
+        exclude = ["order", "price"]
