@@ -55,3 +55,23 @@ class AboutViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "cafe/about.html")
 
+
+class ContactViewTest(TestCase):
+    def test_about_view_get(self):
+        url = reverse("cafe:contact")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "cafe/contact.html")
+
+    def test_about_view_post(self):
+        data = {
+            "name": "mahdi",
+            "email": "mahdi@gmail.com",
+            "subject": "test",
+            "message": "test message",
+        }
+        url = reverse("cafe:contact")
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("cafe:home"))
+
