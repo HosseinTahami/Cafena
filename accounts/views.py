@@ -104,7 +104,7 @@ class UserLogoutView(View):
             messages.error(
                 request, "Logged Out Failed:\n You're not Logged In", "danger"
             )
-
+            return redirect("accounts:login")
         else:
             messages.success(
                 request,
