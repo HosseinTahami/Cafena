@@ -12,7 +12,7 @@ function removeProductNav(button) {
     totalPriceElement.textContent = cart["total_price"];
     delete cart[productId];
     Cookies.set("cart", JSON.stringify(cart));
-    alert("succes");
+    alert("success");
   }
 
 

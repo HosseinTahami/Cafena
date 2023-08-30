@@ -133,7 +133,7 @@ class OrdersHistoryView(View):
             orders = Order.objects.filter(id__in=order_ids)
         except:
             orders = None
-        page_data = PageData.get_page_date("Details_Page")
+        page_data = PageData.get_page_date("History_Page")
         return render(
             request,
             "orders/orders_history.html",
