@@ -48,5 +48,10 @@ def test_home_view(self):
         self.assertIsInstance(response.context["form"], CartAddForm)
     
     def tearDown(self):
-        self.product.delete()
-        self.category.delete()
+class AboutViewTest(TestCase):
+    def test_about_view_get(self):
+        url = reverse("cafe:about")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "cafe/about.html")
+
