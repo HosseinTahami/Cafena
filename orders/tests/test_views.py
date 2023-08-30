@@ -15,32 +15,30 @@ class CheckoutViewTest(TestCase):
     def test_get(self):
         session_data = {
             "orders_info": {
-                "order1": [
+                "1": [
                     {"key1": "value1"},
                     {"key2": "value2"},
                     [1234567890],
                 ],
-                "order2": [
+                "2": [
                     {"key3": "value3"},
                     {"key4": "value4"},
                     [9876543210],
                 ],
             }
         }
-
-        self.client.session.update(session_data)
+        session = self.client.session
+        session.update(session_data)
+        session.save()
         url = reverse("orders:checkout")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/checkout.html")
-        # expected_initial = {"phone_number": [9876543210]}
-        # self.assertEqual(response.context["form"].initial, expected_initial)
+        expected_initial = {"phone_number": [9876543210]}
+        self.assertEqual(response.context["form"].initial, expected_initial)
 
 
 class CartViewTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-
     def test_cart_view(self):
         response = self.client.get(reverse("orders:cart"))
         self.assertEqual(response.status_code, 200)
@@ -48,10 +46,10 @@ class CartViewTest(TestCase):
 
 
 class OrderRejectTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.personnel = baker.make(Personnel)
-        self.order = baker.make(Order, personnel=self.personnel, status="p")
+    @classmethod
+    def setUpTestData(cls):
+        cls.personnel = baker.make(Personnel)
+        cls.order = baker.make(Order, personnel=cls.personnel, status="p")
 
     def test_order_rejection(self):
         self.client.force_login(self.personnel)
@@ -65,10 +63,10 @@ class OrderRejectTest(TestCase):
 
 
 class OrderAcceptTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.personnel = baker.make(Personnel)
-        self.order = baker.make(Order, personnel=self.personnel, status="p")
+    @classmethod
+    def setUpTestData(cls):
+        cls.personnel = baker.make(Personnel)
+        cls.order = baker.make(Order, personnel=cls.personnel, status="p")
 
     def test_order_rejection(self):
         self.client.force_login(self.personnel)
@@ -159,6 +157,7 @@ class AddOrderViewTest(TestCase):
         self.assertEqual(session[str(order.id)][0]["sub_total"], 20.00)
         self.assertEqual(session[str(order.id)][1], 20.00)
         self.assertEqual(session[str(order.id)][2], self.customer.phone_number)
+
 
 class ReOrderViewTest(TestCase):
     @classmethod
