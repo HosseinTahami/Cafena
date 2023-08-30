@@ -31,10 +31,17 @@
   <div class="container" >
     <div class="row" >
       <div class="col-xl-12" >
-        <div class="cart-wrapper" style="background-color: #778ba5;">
+        <div class="cart-wrapper" style="background-color: #ffffff;">
           <div class="table-content table-responsive">
             {% if orders %}
             {% for order in orders %}
+            <table class="table" style="background-color:#c7a07a ;" >
+            <td>Phone number: {{ order.customer.phone_number }}</td>
+            <td>Ordered at: {{ order.create_time }}</td>
+            <td>Status:
+              {%if order.status == 'p' %} pending {% elif order.status == 'a'%} accepted {% else %} rejected {% endif %}
+              </td>
+          </table>
             <table class="table" >
               <thead>
                 <tr>
@@ -60,13 +67,9 @@
                 </tr>
 
                 {% endfor %}
-                <tr class="bg-info">
-                  <td>Phone number: {{ order.customer.phone_number }}</td>
-                  <td>Total Price: {{ order.get_total_price }}$</td>
-                  <td>Ordered at: {{ order.create_time }}</td>
-                  <td>Status:
-                  {%if order.status == 'p' %} pending {% elif order.status == 'a'%} accepted {% else %} rejected {% endif %}
-                  </td>
+                <tr style="background-color: #aeaca9f3;">
+                  
+                  <td colspan="3">Total Price: {{ order.get_total_price }}$</td>
                   <td>Paid:
                   {% if order.paid %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
