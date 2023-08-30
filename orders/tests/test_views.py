@@ -119,54 +119,47 @@ class OrdersHistoryViewTest(TestCase):
         self.assertIsNone(response.context["orders"])
 
 
-"""
 class AddOrderViewTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.add_order_url = reverse("orders:add_order")
-        self.table = baker.make(Table, table_number=1)
-        self.product = baker.make(Product, name="Test Product", price=10.00)
-        self.customer = baker.make(Customer)
-        self.order = baker.make(Order, table=self.table, customer=self.customer)
-        self.orderitem = baker.make(OrderItem, order=self.order, product=self.product)
-        self.customer = baker.make(Customer)
-        self.cart = {
-            "1": {
-                "name": "Test Product",
-                "price": "10.00",
-                "quantity": 2,
-                "sub_total": "20.00",
-            },
-            "total_price": "20.00",
-        }
+    @classmethod
+    def setUpTestData(cls):
+        cls.table = baker.make(Table, table_number=1)
+        # cls.product = baker.make(Product, name="Test Product", price=10.00)
+        cls.customer = baker.make(Customer, phone_number="09121111111")
+        cls.cart = json.dumps(
+            {
+                "1": {
+                    "name": "Test Product",
+                    "price": 10.00,
+                    "quantity": 2,
+                    "sub_total": 20.00,
+                },
+                "total_price": 20.00,
+            }
+        )
 
     def test_post(self):
-        session = self.client.session
-        session["orders_info"] = {}
-        session.save()
-        self.client.cookies["cart"] = urllib.parse.quote(json.dumps(self.cart))
+        self.client.cookies["cart"] = self.cart
         response = self.client.post(
             reverse("orders:add_order"),
-            {
+            data={
                 "phone_number": self.customer.phone_number,
                 "table_number": self.table.table_number,
             },
         )
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(Order.objects.count(), 1)
-        self.assertEqual(OrderItem.objects.count(), 1)
-        self.assertEqual(len(session["orders_info"]), 1)
+        self.assertEqual(response.status_code, 302)
+        session = self.client.session.get("orders_info")
+        self.assertEqual(len(session), 1)
 
         order = Order.objects.first()
         order_item = OrderItem.objects.first()
 
-        self.assertEqual(session["orders_info"][str(order.id)][0]["price"], "10.00")
-        self.assertEqual(session["orders_info"][str(order.id)][0]["quantity"], 2)
-        self.assertEqual(session["orders_info"][str(order.id)][0]["sub_total"], "20.00")
-        self.assertEqual(session["orders_info"][str(order.id)][1], "20.00")
-        self.assertEqual(
-            session["orders_info"][str(order.id)][2], self.customer.phone_number
+        self.assertEqual(session[str(order.id)][0]["price"], 10.00)
+        self.assertEqual(session[str(order.id)][0]["quantity"], 2)
+        self.assertEqual(session[str(order.id)][0]["sub_total"], 20.00)
+        self.assertEqual(session[str(order.id)][1], 20.00)
+        self.assertEqual(session[str(order.id)][2], self.customer.phone_number)
+
         )
         self.assertNotIn(self.client.COOKIES["cart"], self.client.cookies)
 """
