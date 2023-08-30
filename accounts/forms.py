@@ -33,16 +33,48 @@ class UserCustomerLoginForm(forms.Form):
 
 class OTPForm(forms.Form):
     digit1 = forms.CharField(
-        max_length=1, widget=forms.TextInput(attrs={"maxlength": "1"})
+        max_length=1,
+        widget=forms.TextInput(
+            attrs={
+                "class": "m-3 text-center form-control rounded",
+                "type": "text",
+                "id": "fourth",
+                "maxlength": "1",
+            }
+        ),
     )
     digit2 = forms.CharField(
-        max_length=1, widget=forms.TextInput(attrs={"maxlength": "1"})
+        max_length=1,
+        widget=forms.TextInput(
+            attrs={
+                "class": "m-3 text-center form-control rounded",
+                "type": "text",
+                "id": "fourth",
+                "maxlength": "1",
+            }
+        ),
     )
     digit3 = forms.CharField(
-        max_length=1, widget=forms.TextInput(attrs={"maxlength": "1"})
+        max_length=1,
+        widget=forms.TextInput(
+            attrs={
+                "class": "m-3 text-center form-control rounded",
+                "type": "text",
+                "id": "fourth",
+                "maxlength": "1",
+            }
+        ),
     )
     digit4 = forms.CharField(
-        max_length=1, widget=forms.TextInput(attrs={"maxlength": "1"})
+        max_length=1,
+        widget=forms.TextInput(
+            attrs={
+                "class": "m-3 text-center form-control rounded",
+                "type": "text",
+                "id": "fourth",
+                "maxlength": "1",
+            }
+        ),
     )
 
 
