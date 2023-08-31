@@ -1,5 +1,22 @@
 {% extends 'base.html' %} {% load static %} {% block title %}
 {{page_data.title}} {% endblock %} {%block content%}
+<style>
+  .image-style {
+    width: 100px;
+    /* Set the desired width */
+    height: auto;
+    /* Maintain aspect ratio */
+    border: 1px solid #ccc;
+    /* Add a border */
+    border-radius: 150px;
+    /* Round the corners */
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /* Add a subtle shadow */
+    margin: 10px;
+    /* Add some spacing around the image */
+  }
+</style>
+
 <section class="breadcrumb-area pt-140 pb-140 bg_img" data-overlay="dark" data-opacity="5"
   data-background="{{page_data.banner.url}}">
   <div class="shape shape__1">
@@ -33,6 +50,7 @@
             <table class="table">
               <thead>
                 <tr>
+                  <th class="cart-product-image">Product Image</th>
                   <th class="cart-product-name">Product Name</th>
                   <th class="product-price">Price</th>
                   <th class="product-quantity">Quantity</th>
@@ -40,10 +58,11 @@
                 </tr>
               </thead>
               <tbody>
+
                 {% for key, value in cart.items %} {% if not forloop.last %}
                 <tr data-row-id="{{ key }}">
+                  <td><img src="{{ value.image }}" alt="" class="image-style"></td>
                   <td class="product-name">
-                    <img src="{{ value.image.url }}" alt="">
                     <a href="#">{{ value.name }}</a>
                   </td>
                   <td class="product-price">
