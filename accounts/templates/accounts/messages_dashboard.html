@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 class="pageheader-title">Orders Management</h2>
+                            <h2 class="pageheader-title">Orders Messages</h2>
                             <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce
                                 sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
                             <div class="page-breadcrumb">
@@ -60,6 +60,7 @@
                 <!-- ============================================================== -->
                 <!-- end pageheader -->
                 <!-- ============================================================== -->
+                {% for message in contacts %}
                 <div class="row">
                     <!-- ============================================================== -->
                     <!-- data table  -->
@@ -67,106 +68,43 @@
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Orders Management
-                                    <form action="" method="get">
-                                        <label for="date1">From:</label>
-                                        <input type="date" id="date1" name="orders_managers_date1" required>
-                                        <label for="date2">To:</label>
-                                        <input type="date" id="date2" name="orders_managers_date2" required>
-                                        <input type="submit" value="Submit">
-                                    </form>
+                                <h5 class="mb-0">{{ message.subject }}
                                 </h5>
+                                
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-
-                                    <!-- ======================= -->
-                                    <!-- Filter -->
-                                    <!-- ======================= -->
-                                    <!-- <div class="filter-container">
-                                        <button class="filter-toggle btn btn-secondary mt-2 mb-3" data-toggle="collapse">Toggle Filters</button>
-                                        <div class="filter-content">
-                                          <label for="startDateInput">Start Date:</label>
-                                          <input type="date" id="startDateInput" class="form-control">
-                                          <label for="endDateInput">End Date:</label>
-                                          <input type="date" id="endDateInput" class="form-control">
-                                          <button id="filterButton" class="btn btn-primary mt-2 mb-3">Filter</button>
-                                        </div>
-                                      </div> -->
-                                    <!-- ======================= -->
-                                    <!-- End Filter -->
-                                    <!-- ======================= -->
-
                                     <table id="example" class="table table-striped table-bordered second"
                                         style="width:100%">
                                         <thead>
                                             <tr class="border-0">
-                                                <th class="border-0">Order Id</th>
-                                                <th class="border-0">Price</th>
-                                                <th class="border-0">Order Time</th>
-                                                <th class="border-0">Customer</th>
-                                                <th class="border-0">Status</th>
-                                                <th class="border-0 no-export">Details</th>
-                                                <th class="border-0 no-export">Accept</th>
-                                                <th class="border-0 no-export">Reject</th>
-                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
-                                                {% if not order.paid %}
-                                                <th class="border-0 no-export">Paid</th>
-                                                {% endif %}
-                                                {% endif %}
+                                                <th class="border-0">Name</th>
+                                                <th class="border-0">Email</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for order, cost in orders_with_costs_custom %}
                                             <tr>
-                                                <td>{{ order.id }} </td>
-                                                <td>{{ cost }}</td>
-                                                <td>{{ order.create_time }}</td>
-                                                <td>{{ order.customer }} </td>
-                                                <td>
-                                                    <span
-                                                        class="badge-dot {% if order.status == 'p' %}badge-brand {% elif order.status == 'r' %}badge-danger {% else %} badge-success {% endif %}mr-1"></span>
-                                                    {% if order.status == 'p' %}Pending {% elif order.status == 'r'%}Rejected {% else %} Accepted {% endif %}
-                                                </td>
-                                                <td><a href="{% url 'accounts:order_detail' order.pk %}"
-                                                        class="btn btn-primary"> details </a></td>
-                                                {% if order.status == 'p' %}
-                                                <td><a href="{% url 'orders:order_accept' order.pk %}"
-                                                        class="btn btn-success">accept</a></td>
-                                                <td><a href="{% url 'orders:order_reject' order.pk %}"
-                                                        class="btn btn-danger">reject</a></td>
-                                                {% else %}
-                                                <td></td>
-                                                <td></td>
-                                                {% endif %}
-                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
-                                                {% if not order.paid %}
-                                                <td><a href="{% url 'orders:order_paid' order.pk %}"
-                                                        class="btn btn-outline-success">paid</a></td>
-                                                {% else %}
-                                                <td></td>
-                                                {% endif %}
-                                                {% endif %}
+                                                <td>{{ message.name }} </td>
+                                                <td>{{ message.email }}</td>
                                             </tr>
-                                            {% endfor %}
                                         </tbody>
-                                        <tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-striped table-bordered second"
+                                        style="width:100%">
+                                        <thead>
                                             <tr class="border-0">
-                                                <th class="border-0">Order Id</th>
-                                                <th class="border-0">Price</th>
-                                                <th class="border-0">Order Time</th>
-                                                <th class="border-0">Customer</th>
-                                                <th class="border-0">Status</th>
-                                                <th class="border-0">Details</th>
-                                                <th class="border-0">Accept</th>
-                                                <th class="border-0">Reject</th>
-                                                {% if user|user_in_group:"manager" or user|user_in_group:"cashier" %}
-                                                {% if not order.paid %}
-                                                <th class="border-0">Paid</th>
-                                                {% endif %}
-                                                {% endif %}
+                                                <th class="border-0">Message</th>
                                             </tr>
-                                        </tfoot>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{ message.message }} </td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -176,6 +114,8 @@
                     <!-- end data table  -->
                     <!-- ============================================================== -->
                 </div>
+                {% endfor %}
+
             </div>
         </div>
     </div>

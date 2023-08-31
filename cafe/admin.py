@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 # inner modules imports
-from .models import Category, Product
+from .models import Category, Product, Contact
 
 
 @admin.register(Category)
@@ -73,3 +73,5 @@ class CategoryAdmin(admin.ModelAdmin):
         form = csvImportForm()
         data = {"form": form}
         return render(request, "admin/csv_upload.html", data)
+
+admin.site.register(Contact)

@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin,
     PermissionRequiredMixin,
 )
+from django.contrib import messages
 
 # inner modules imports
 from cafe.models import Product
@@ -69,8 +70,11 @@ class AddOrderView(View):
 
             session_order = session[str(order.id)] = []
             cart_js = request.COOKIES.get(self.CART_COOKIE_KEY)
-            decoded_cart_js = urllib.parse.unquote(cart_js)
-            cart = json.loads(decoded_cart_js)
+            try:
+                decoded_cart_js = urllib.parse.unquote(cart_js)
+                cart = json.loads(decoded_cart_js)
+            except:
+                cart = json.loads(cart_js)
             for key, value in cart.items():
                 if key != "total_price":
                     product = Product.objects.get(id=key)
@@ -96,7 +100,6 @@ class AddOrderView(View):
             response = redirect("orders:orders_history")
             response.delete_cookie(self.CART_COOKIE_KEY)
             return response
-        return HttpResponse(status=400)
 
 
 class OrderAccept(LoginRequiredMixin, View):
@@ -121,10 +124,15 @@ class OrderPaid(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "orders.change_paid"
 
     def get(self, request, pk):
-        order = Order.objects.get(pk=pk)
-        order.paid = True
-        order.save()
-        return redirect("accounts:dashboard")
+        try:
+            order = Order.objects.get(pk=pk)
+            order.paid = True
+            order.save()
+            messages.success(request, "It paid successfully.")
+            return redirect("accounts:dashboard")
+        except:
+            messages.error(request, "It can not be paid before accepting!!!", 'danger')
+            return redirect("accounts:dashboard")
 
 
 class OrdersHistoryView(View):

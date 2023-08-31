@@ -56,9 +56,11 @@
                 <!-- ============================================================== -->
                 <!-- pagehader  -->
                 <!-- ============================================================== -->
-
+                
+                <h3 style="color: #795c40;">General Report</h3>
                 <div class="row">
                     <!-- metric -->
+                    
                     {% for order_comparison, title in compare_orders_with_titles %}
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div class="card">
@@ -70,7 +72,7 @@
 
                                 </div>
                                 <div class="metric-label d-inline-block float-right {% if order_comparison.changes_percentage > 0 %}text-success{% else %}text-danger{% endif %}">
-                                    <i class="fa fa-fw {% if order_comparison.changes_percentage > 0 %}fa-caret-up{% else %}fa-caret-down{% endif %}"></i><span>{{ order_comparison.changes_percentage }}%</span>
+                                    <i class="fa fa-fw {% if order_comparison.changes_percentage > 0 %}fa-caret-up{% else %}fa-caret-down{% endif %}"></i><span>{{ order_comparison.changes_percentage|floatformat:2 }}%</span>
                                 </div>
                             </div>
                         </div>
@@ -80,6 +82,7 @@
 
                 <div class="row">
                     <!-- metric -->
+                    
                     {% for customer_comparison, title in compare_customers_with_titles %}
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div class="card">
@@ -91,7 +94,7 @@
 
                                 </div>
                                 <div class="metric-label d-inline-block float-right {% if customer_comparison.changes_percentage > 0 %}text-success{% else %}text-danger{% endif %}">
-                                    <i class="fa fa-fw {% if customer_comparison.changes_percentage > 0 %}fa-caret-up{% else %}fa-caret-down{% endif %}"></i><span>{{ customer_comparison.changes_percentage }}%</span>
+                                    <i class="fa fa-fw {% if customer_comparison.changes_percentage > 0 %}fa-caret-up{% else %}fa-caret-down{% endif %}"></i><span>{{ customer_comparison.changes_percentage|floatformat:2 }}%</span>
                                 </div>
                             </div>
                         </div>
@@ -102,6 +105,8 @@
                     <!-- ============================================================== -->
                     <!-- top selling products  -->
                     <!-- ============================================================== -->
+                    <hr>
+                            <h3 style="color: #795c40;">Top Selling Products</h3>
                     <div class="row">
                     {% for products, title in most_seller_products_with_titles %}
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6 d-flex">
@@ -156,8 +161,10 @@
                     <!-- ============================================================== -->
                     <!-- end top selling products  -->
                     <!-- ============================================================== -->
+                    <hr>
+                        <h3 style="color: #795c40;">Diagrams</h3>
                     <div class="row align-content-stretch">
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders In Morning</h5>
                                 <div class="card-body">
@@ -166,7 +173,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders In Noon</h5>
                                 <div class="card-body">
@@ -175,7 +182,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders In Night</h5>
                                 <div class="card-body">
@@ -183,7 +190,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders Demographic
                                     <form action="" method="get">
@@ -191,6 +198,7 @@
                                         <input type="date" id="date1" name="most_seller_products_custom_date1" required>
                                         <label for="date2">To:</label>
                                         <input type="date" id="date2" name="most_seller_products_custom_date2" required>
+                                        <br>
                                         <label for="hour1">Enter an hour (0-23):</label>
                                         <input type="number" id="hour1" name="most_seller_products_custom_hour1" min="0" max="23" required>
                                         <label for="hour2">Enter an hour (0-23):</label>
