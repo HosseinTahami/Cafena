@@ -15,6 +15,9 @@ urlpatterns = [
         "sales_dashboard/", views.SalesDashboardView.as_view(), name="sales_dashboard"
     ),
     path(
+        "messages_dashboard/", views.MessagesDashboardView.as_view(), name="messages_dashboard"
+    ),
+    path(
         "orders_dashboard/", views.OrdersDashboardView.as_view(), name="orders_dashboard"
     ),
     path("order_detail/<int:pk>", views.OrderDetailView.as_view(), name="order_detail"),

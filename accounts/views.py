@@ -12,6 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from utils import send_otp_code
 from dynamic.models import Dashboard
 from orders.models import Order, OrderItem
+from cafe.models import Contact
 from .utils_dashboard import SalesDashboardVars, DashboardVars, OrdersDashboardVars
 from .forms import UserCustomerLoginForm, OTPForm, OrderItemForm
 from .models import Personnel
@@ -159,6 +160,24 @@ class OrdersDashboardView(LoginRequiredMixin, TemplateView):
         context["page_data"] = page_data
 
         return context
+
+class MessagesDashboardView(LoginRequiredMixin, UserPassesTestMixin, View):
+    required_group = "manager"
+
+    def test_func(self):
+        return self.request.user.groups.filter(name=self.required_group).exists()
+
+    def handle_no_permission(self):
+        return redirect("accounts:dashboard")
+
+    def get(self, request):
+        contacts = Contact.objects.all()
+        # dynamic data
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context = {"page_data": page_data, "contacts": contacts}
+        
+        return render(request, "accounts/messages_dashboard.html", context=context)
+
 
 
 class OrderDetailView(LoginRequiredMixin, View):
