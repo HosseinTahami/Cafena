@@ -47,7 +47,7 @@ class UserLoginView(View):
             phone_number = cd["phone_number"]
             code = randint(1000, 9999)
             if Personnel.objects.filter(phone_number=phone_number).exists():
-                # send_otp_code(phone_number, code)
+                send_otp_code(phone_number, code)
                 print(code)
             session["phone_number"] = phone_number
             session["code"] = code
