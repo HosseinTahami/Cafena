@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
+from django.contrib import messages
 
 # inner modules imports
 from cafe.models import Product
@@ -119,10 +120,15 @@ class OrderPaid(LoginRequiredMixin, PermissionRequiredMixin,View):
     permission_required = 'orders.change_paid' 
 
     def get(self, request, pk):
-        order = Order.objects.get(pk=pk)
-        order.paid = True
-        order.save()
-        return redirect("accounts:dashboard")
+        try:
+            order = Order.objects.get(pk=pk)
+            order.paid = True
+            order.save()
+            messages.success(request, "It paid successfully.")
+            return redirect("accounts:dashboard")
+        except:
+            messages.error(request, "It can not be paid before accepting!!!", 'danger')
+            return redirect("accounts:dashboard")
 
 
 class OrdersHistoryView(View):
