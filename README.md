@@ -26,9 +26,9 @@ Cafena, an online menu for your cafe.
 - git clone git@github.com:HosseinTahami/Cafena.git           # SSH
 - gh repo clone HosseinTahami/Cafena                          # GitHub CLI
 2. Create a virtual environment:
-python -m venv env
-   source env/bin/activate  # Linux/Mac
-   env\Scripts\activate  # Windows
+    - python -m venv env
+        - source env/bin/activate  # Linux/Mac
+        - env\Scripts\activate  # Windows
 3. Install the dependencies:
 pip install -r requirements.txt
 4. Migrate the database:
@@ -56,14 +56,16 @@ Transform your traditional coffee shop menu into a creative and user-friendly on
 
 ## Technologies Used
 
-- ![Python](https://www.python.org/static/img/python-logo.png) Python
-- ![Django](https://www.djangoproject.com/m/img/logos/django-logo-negative.png) Django
-- ![Pip](https://pip.pypa.io/static/images/logo.png) Pip
-- ![HTML](https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png) HTML
-- ![CSS](https://www.w3.org/html/logo/downloads/CSS3_Logo_512.png) CSS
-- ![JavaScript](https://www.javascript.com/images/pages/home/img-logo.png) JavaScript
-- ![jQuery](https://jquery.com/jquery-wp-content/themes/jquery.com/i/favicon.ico) jQuery
-- ![Git](https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png) Git
+<div>
+  <img src="https://www.python.org/static/img/python-logo.png" alt="Python" title="Python" style="display:inline-block; background-color:#3776AB; color:#ffffff; padding: 5px 10px; border-radius: 5px;">
+  <img src="https://www.djangoproject.com/m/img/logos/django-logo-negative.png" alt="Django" title="Django" style="display:inline-block; background-color:#092E20; color:#ffffff; padding: 5px 10px; border-radius: 5px;">
+  <img src="https://pip.pypa.io/static/images/logo.png" alt="Pip" title="Pip" style="display:inline-block; background-color:#F9DC3E; color:#000000; padding: 5px 10px; border-radius: 5px;">
+  <img src="https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png" alt="HTML" title="HTML" style="display:inline-block; background-color:#E34F26; color:#ffffff; padding: 5px 10px; border-radius: 5px;">
+  <img src="https://www.w3.org/html/logo/downloads/CSS3_Logo_512.png" alt="CSS" title="CSS" style="display:inline-block; background-color:#1572B6; color:#ffffff; padding: 5px 10px; border-radius: 5px;">
+  <img src="https://www.javascript.com/images/pages/home/img-logo.png" alt="JavaScript" title="JavaScript" style="display:inline-block; background-color:#F0DB4F; color:#000000; padding: 5px 10px; border-radius: 5px;">
+  <img src="https://jquery.com/jquery-wp-content/themes/jquery.com/i/favicon.ico" alt="jQuery" title="jQuery" style="display:inline-block; background-color:#0769AD; color:#ffffff; padding: 5px 10px; border-radius: 5px;">
+  <img src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png" alt="Git" title="Git" style="display:inline-block; background-color:#F05032; color:#ffffff; padding: 5px 10px; border-radius: 5px;">
+</div>
 
 ## Contributing
 
