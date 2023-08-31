@@ -66,6 +66,8 @@
                     <!-- ============================================================== -->
                     <!-- end pageheader  -->
                     <!-- ============================================================== -->
+                   
+                            <h3 style="color: #795c40;">General view</h3>
                     <div class="ecommerce-widget">
                         <div class="row">
                             {% for item, title in general_data_with_title %}
@@ -87,6 +89,8 @@
                             <!-- ============================================================== -->
                             <!-- product category  -->
                             <!-- ============================================================== -->
+                            <hr>
+                            <h3 style="color: #795c40;">Most sold categories</h3>
                             <div class="row">
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="card">
@@ -131,6 +135,8 @@
                             <!-- ============================================================== -->
                                    <!-- Best customers  -->
                             <!-- ============================================================== -->
+                            <hr>
+                            <h3 style="color: #795c40;">Best customers</h3>
                             <div class="row">
                                 {% for customers, title in best_customers_with_title %}
                                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
@@ -169,7 +175,8 @@
                                    <!-- Start Custom Customer&Category and get count personnel  -->
                             <!-- ============================================================== -->
 
-
+                            <hr>
+                            <h3 style="color: #795c40;">custom filters</h3>
                             <div class="row align-items-stretch">
                                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 d-flex">
                                     <div class="card flex-fill">
@@ -246,6 +253,7 @@
                             <!-- ============================================================== -->
                             <!-- End Custom Customer&Category and get count personnel  -->
                             <!-- ============================================================== -->
+                            <br>
                             <div class="row  mb-2">
                             <a id="order-by-status"></a>
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 d-flex">
@@ -292,11 +300,12 @@
 
  <!-- recent orders  -->
                         <!-- ============================================================== -->
-
+                        <hr>
+                        <h3 style="color: #795c40;">Recent Orders</h3>
+                        
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="card">
-                                    <h5 class="card-header">Recent Orders</h5>
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
                                             <table class="table">
@@ -407,8 +416,8 @@
                 {
                     label: "Peak Business Hours",
                     data: data,
-                    backgroundColor: "rgba(75, 192, 192, 0.2)",
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "rgba(196, 161, 127 , 0.3)",
+                    borderColor: "rgba(196, 161, 127 )",
                     borderWidth: 1
                 }
             ]
@@ -442,8 +451,8 @@ var ctx = document.getElementById("ordersPersonnelChart").getContext("2d");
                 {
                     label: "orders accepted by personnel",
                     data: data,
-                    backgroundColor: "rgba(75, 192, 192, 0.2)",
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "rgba(196, 161, 127 , 0.3)",
+                    borderColor: "rgba(196, 161, 127 )",
                     borderWidth: 1
                 }
             ]
@@ -477,8 +486,8 @@ var ctx = document.getElementById("ordersPersonnelChart").getContext("2d");
                 {
                     label: "best categories all",
                     data: data,
-                    backgroundColor: "#0d0d28",
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "#997551 ",
+                    borderColor: "rgba(78, 62, 46)",
                     borderWidth: 1
                 }
             ]
@@ -508,8 +517,8 @@ var ctx = document.getElementById("bestCategoriesChartYear").getContext("2d");
                 {
                     label: "best categories all",
                     data: data,
-                    backgroundColor: "#0d0d28",
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "#c7a07a",
+                    borderColor: "rgba(78, 62, 46)",
                     borderWidth: 1
                 }
             ]
@@ -539,8 +548,8 @@ var ctx = document.getElementById("bestCategoriesChartMonth").getContext("2d");
                 {
                     label: "best categories all",
                     data: data,
-                    backgroundColor: "#0d0d28",
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "#c7a07a",
+                    borderColor: "rgba(78, 62, 46)",
                     borderWidth: 1
                 }
             ]
@@ -570,8 +579,8 @@ var ctx = document.getElementById("bestCategoriesChartWeek").getContext("2d");
                 {
                     label: "best categories all",
                     data: data,
-                    backgroundColor: '#0d0d28',
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "#c7a07a",
+                    borderColor: "rgba(78, 62, 46)",
                     borderWidth: 1
                 }
             ]
@@ -601,8 +610,8 @@ var ctx = document.getElementById("bestCategoriesChartCustom").getContext("2d");
                 {
                     label: "best categories custom",
                     data: data,
-                    backgroundColor: '#0d0d28',
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: "#c7a07a",
+                    borderColor: "rgba(78, 62, 46)",
                     borderWidth: 1
                 }
             ]
