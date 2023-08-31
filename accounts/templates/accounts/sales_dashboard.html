@@ -56,9 +56,11 @@
                 <!-- ============================================================== -->
                 <!-- pagehader  -->
                 <!-- ============================================================== -->
-
+                
+                <h3 style="color: #795c40;">General Report</h3>
                 <div class="row">
                     <!-- metric -->
+                    
                     {% for order_comparison, title in compare_orders_with_titles %}
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div class="card">
@@ -80,6 +82,7 @@
 
                 <div class="row">
                     <!-- metric -->
+                    
                     {% for customer_comparison, title in compare_customers_with_titles %}
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div class="card">
@@ -102,6 +105,8 @@
                     <!-- ============================================================== -->
                     <!-- top selling products  -->
                     <!-- ============================================================== -->
+                    <hr>
+                            <h3 style="color: #795c40;">Top Selling Products</h3>
                     <div class="row">
                     {% for products, title in most_seller_products_with_titles %}
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6 d-flex">
@@ -156,8 +161,10 @@
                     <!-- ============================================================== -->
                     <!-- end top selling products  -->
                     <!-- ============================================================== -->
+                    <hr>
+                        <h3 style="color: #795c40;">Diagrams</h3>
                     <div class="row align-content-stretch">
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders In Morning</h5>
                                 <div class="card-body">
@@ -166,7 +173,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders In Noon</h5>
                                 <div class="card-body">
@@ -175,7 +182,7 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders In Night</h5>
                                 <div class="card-body">
@@ -183,7 +190,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 col-12">
                             <div class="card">
                                 <h5 class="card-header">Orders Demographic
                                     <form action="" method="get">

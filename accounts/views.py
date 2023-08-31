@@ -171,7 +171,8 @@ class OrderDetailView(LoginRequiredMixin, View):
     def get(self, request, **kwargs):
         form = self.form_class()
         total_price = self.order.get_total_price()
-        context = {"order": self.order, "total_price": total_price, "form": form}
+        page_data = Dashboard.get_page_date("Dashboard_Page")
+        context = {"order": self.order, "total_price": total_price, "form": form, "page_data": page_data}
         return render(
             request,
             "accounts/order_detail.html",
