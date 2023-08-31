@@ -6,7 +6,8 @@ class FooterModelTest(TestCase):
         self.footer = Footer.objects.create(
             footer_name="Footer Name",
             footer_phone="1234567890",
-            footer_email="example@example.com",
+            footer_address = 'Iran, Tehran',
+            footer_map = 'Iran, Tehran',
             footer_text="Footer Text",
         )
 

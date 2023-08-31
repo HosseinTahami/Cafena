@@ -108,13 +108,13 @@ class OrdersHistoryViewTest(TestCase):
         response = self.client.get(reverse("orders:orders_history"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/orders_history.html")
-        self.assertEqual(len(response.context["orders"]), 2)
+        self.assertEqual(len(response.context["page_obj"]), 2)
 
     def test_get_without_orders(self):
         response = self.client.get(reverse("orders:orders_history"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "orders/orders_history.html")
-        self.assertIsNone(response.context["orders"])
+        self.assertIsNone(response.context["page_obj"])
 
 
 class AddOrderViewTest(TestCase):
