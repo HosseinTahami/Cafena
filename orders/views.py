@@ -39,8 +39,7 @@ class CheckoutView(View):
             ]
         except:
             last_phone_number = None
-        total_price = cart.total_price()
-        print(request.session.get("orders_info"))
+
 
         initial_values = {"phone_number": last_phone_number}
         form = CustomerForm(initial=initial_values)
