@@ -11,14 +11,14 @@ class Footer(models.Model):
     footer_name = models.CharField(max_length=32)
     footer_phone = models.CharField(max_length=32)
     footer_logo = models.ImageField(upload_to='footer_logo/')
-    footer_address = models.CharField(max_length=128)
+    footer_address = models.CharField(max_length=128,default="No address found.")
     footer_text = models.CharField(max_length=255)
     footer_youtube = models.CharField(max_length=128,default='#')
     footer_telegram = models.CharField(max_length=128,default='#')
     footer_instagram = models.CharField(max_length=128,default='#')
     footer_googleplus = models.CharField(max_length=128,default='#')
     footer_twitter = models.CharField(max_length=128,default='#')
-    footer_map = models.TextField()
+    footer_map = models.TextField(default="No map found.")
 
     def logo_preview(self): 
         return mark_safe(f'<img src = "{self.footer_logo.url}" width = "30"/>')
