@@ -126,8 +126,7 @@
                                                 <td>
                                                     <span
                                                         class="badge-dot {% if order.status == 'p' %}badge-brand {% elif order.status == 'r' %}badge-danger {% else %} badge-success {% endif %}mr-1"></span>
-                                                    {% if order.status == 'p' %}Pending {% elif order.status ==
-                                                    'r'%}Rejected {% else %} Accepted {% endif %}
+                                                    {% if order.status == 'p' %}Pending {% elif order.status == 'r'%}Rejected {% else %} Accepted {% endif %}
                                                 </td>
                                                 <td><a href="{% url 'accounts:order_detail' order.pk %}"
                                                         class="btn btn-primary"> details </a></td>
