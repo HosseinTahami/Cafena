@@ -99,7 +99,7 @@ git commit -am 'Add some feature'
 
 4. Push to the branch:
 ```bash 
-git push origin feature-branch` 
+git push origin 'feature-branch' 
 ```
 5. Create a pull request.
 
