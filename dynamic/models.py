@@ -55,7 +55,8 @@ class PageData(models.Model):
                     footer_name = 'default',
                     footer_phone = '+989123456789',
                     footer_logo = 'footer_logo/logo.png',
-                    footer_email = 'mail@mail.com',
+                    footer_address = 'Iran, Tehran',
+                    footer_map = 'Iran, Tehran',
                     footer_text = 'default text',
                 )
 
