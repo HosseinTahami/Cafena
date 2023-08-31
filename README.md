@@ -74,14 +74,14 @@ Transform your traditional coffee shop menu into a creative and user-friendly on
 
 ## Technologies Used
 
-* [![Python][python.js]][python-url]
-* [![Django][django.js]][django-url]
-* [![Pip][pip.js]][pip-url]
-* [![HTML][html.js]][html-url]
-* [![CSS][css.js]][css-url]
-* [![JavaScript][javascript.js]][javascript-url]
-* [![jQuery][jquery.js]][jquery-url]
-* [![Git][git.js]][git-url]
+- Python 
+- Django 
+- Pip 
+- HTML 
+- CSS 
+- JavaScript 
+- jQuery 
+- Git
 
 ## Contributing
 
