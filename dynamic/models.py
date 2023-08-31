@@ -8,16 +8,17 @@ from utils import item_directory_path
 
 # Create your models here.
 class Footer(models.Model):
-    footer_name = models.CharField(max_length=16)
-    footer_phone = models.CharField(max_length=16)
+    footer_name = models.CharField(max_length=32)
+    footer_phone = models.CharField(max_length=32)
     footer_logo = models.ImageField(upload_to='footer_logo/')
-    footer_email = models.CharField(max_length=16)
+    footer_address = models.CharField(max_length=128)
     footer_text = models.CharField(max_length=255)
     footer_youtube = models.CharField(max_length=128,default='#')
     footer_telegram = models.CharField(max_length=128,default='#')
     footer_instagram = models.CharField(max_length=128,default='#')
     footer_googleplus = models.CharField(max_length=128,default='#')
     footer_twitter = models.CharField(max_length=128,default='#')
+    footer_map = models.TextField()
 
     def logo_preview(self): 
         return mark_safe(f'<img src = "{self.footer_logo.url}" width = "30"/>')
@@ -66,6 +67,35 @@ class PageData(models.Model):
                     route = 'Default',
                     banner = 'PageData/banner.png',
                     footer = default_footer
+                )
+
+                return page_data
+            
+class Dashboard(models.Model):
+    target_name = models.CharField(max_length=32)
+    title = models.CharField(max_length=32)
+    name = models.CharField(max_length=32)
+    menu_bg_color = models.CharField(max_length=16)
+
+    def __str__(self) -> str:
+        return str(self.target_name) + ' page data'
+
+    @classmethod
+    def get_page_date(cls, target):
+        try:
+            page_data = cls.objects.get(target_name = target)
+            return page_data
+        except:
+            try:
+                page_data = cls.objects.get(target_name = 'Default_Page')
+                return page_data
+            except:
+                page_data = cls.objects.create(
+                    target_name = 'Default_Page',
+                    title = 'Dashboard',
+                    name = 'ORDERS AND ANALYTICS',
+                    menu_bg_color = '#0e0c28'
+
                 )
 
                 return page_data
