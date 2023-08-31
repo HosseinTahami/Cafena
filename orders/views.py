@@ -2,7 +2,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.http import HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    PermissionRequiredMixin,
+)
 from django.contrib import messages
 
 # inner modules imports
@@ -114,10 +118,10 @@ class OrderReject(LoginRequiredMixin, View):
         order.personnel = request.user
         order.save()
         return redirect("accounts:dashboard")
-    
 
-class OrderPaid(LoginRequiredMixin, PermissionRequiredMixin,View):
-    permission_required = 'orders.change_paid' 
+
+class OrderPaid(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "orders.change_paid"
 
     def get(self, request, pk):
         try:
