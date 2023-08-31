@@ -56,14 +56,14 @@ Transform your traditional coffee shop menu into a creative and user-friendly on
 
 ## Technologies Used
 
-- Python 
-- Django 
-- Pip 
-- HTML 
-- CSS 
-- JavaScript 
-- jQuery 
-- Git
+- ![Python](https://www.python.org/static/img/python-logo.png) Python
+- ![Django](https://www.djangoproject.com/m/img/logos/django-logo-negative.png) Django
+- ![Pip](https://pip.pypa.io/static/images/logo.png) Pip
+- ![HTML](https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png) HTML
+- ![CSS](https://www.w3.org/html/logo/downloads/CSS3_Logo_512.png) CSS
+- ![JavaScript](https://www.javascript.com/images/pages/home/img-logo.png) JavaScript
+- ![jQuery](https://jquery.com/jquery-wp-content/themes/jquery.com/i/favicon.ico) jQuery
+- ![Git](https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png) Git
 
 ## Contributing
 
