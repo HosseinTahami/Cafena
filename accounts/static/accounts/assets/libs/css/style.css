@@ -160,8 +160,8 @@ body {
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
-    color: #71748d;
-    background-color: #efeff6;
+    color: #63523d;
+    background-color: #f4e9d3;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -171,7 +171,7 @@ h3,
 h4,
 h5,
 h6 {
-    color: #3d405c;
+    color: #584231;
     margin: 0px 0px 15px 0px;
     font-family: 'Circular Std Medium';
 }
@@ -212,11 +212,11 @@ p:last-child {
 }
 
 a {
-    color: #71748d;
+    color: #eff0f9;
 }
 
 a:hover {
-    color: #ff407b;
+    color: #8c76e6;
     text-decoration: none;
 }
 
@@ -958,7 +958,7 @@ Borders
 -------------------------*/
 
 .text-primary {
-    color: #5969ff !important;
+    color: #6a513a !important;
 }
 
 .text-brand {
@@ -998,7 +998,7 @@ Borders
 }
 
 .text-muted {
-    color: #7171a6 !important;
+    color: #745e48d5 !important;
 }
 
 .rating-color {
@@ -1241,10 +1241,10 @@ Top Header
     font-size: 30px;
     text-transform: uppercase;
     font-weight: 700;
-    color: #007bff;
+    color: #8a6e50!important;
 }
 .navbar-brand:hover{
-    color: #007bff;
+    color: #73593e!important;
 }
 .navbar-right-top {}
 
@@ -1260,7 +1260,7 @@ Top Header
     padding: 13px 20px;
     font-size: 16px;
     line-height: 2;
-    color: #82849f;
+    color: #ffffff;
 }
 
 
@@ -1567,7 +1567,7 @@ Top Header
    font-size: 13px;
     padding: 9px 30px 9px 20px;
     margin-bottom: 2px;
-    color: #71789e;
+    color: #ffffff;
     transition: 0.3s;
     margin: 6px 1px;
 }
@@ -1617,7 +1617,7 @@ Top Header
 }
 
 .navigation-horizontal .submenu .nav .nav-item .nav-link:hover {
-    color: #3d405c;
+    color: #ffffff;
     border-radius: 2px;
     background-color: transparent;
 }
@@ -1741,7 +1741,7 @@ Left Navigation Sidebar
 }
 
 .nav-left-sidebar .submenu .nav .nav-item .nav-link:hover {
-    color: #3d405c;
+    color: #ffffff;
     border-radius: 2px;
     background-color: transparent;
 }
@@ -1805,38 +1805,38 @@ Leftsidebar - dark
 ------------------------- */
 
 .sidebar-dark {
-    background-color: #0e0c28;
+    background-color:transparent;
     -webkit-box-shadow: 0px 0px 28px 0px rgba(82, 63, 105, 0.13);
     box-shadow: 0px 0px 28px 0px rgba(82, 63, 105, 0.13);
     -webkit-transition: all 0.3s ease;
 }
 
 .sidebar-dark .nav-divider {
-    color: #a4aadb;
+    color: #2523236a;
     font-size: 12px;
     letter-spacing: 1px;
 }
 
 .sidebar-dark.nav-left-sidebar .nav-link i {
-    color: #7a80b4;
+    color: #ffffff;
 }
 
 .sidebar-dark.nav-left-sidebar .navbar-nav .nav-item {}
 
 .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link {
-    color: #7a80b4;
+    color: #313132bb;
 }
 
 .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link:focus,
 .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link:hover {
     color: #fff;
-    background-color: #242849;
+    background-color: transparent;
     border-radius: 2px;
 }
 
 .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link:focus,
 .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link.active {
-    background-color: #242849;
+    background-color:transparent;
     color: #fff;
     border-radius: 2px;
 }
@@ -4501,18 +4501,18 @@ Pills vertical
 .table th {
     padding: 10px;
     vertical-align: middle;
-    border-top: 1px solid #e6e6f2;
+    border-top: 1px solid #DAD2CB;
     font-weight: normal;
 }
 
 .table thead th {
     vertical-align: bottom;
-    border-bottom: 2px solid #e6e6f2;
+    border-bottom: 2px solid #DAD2CB;
 }
 
 .table thead th,
 .table th {
-    color: #3d405c;
+    color: #9B6D3F;
     font-family: 'Circular Std Medium';
 }
 

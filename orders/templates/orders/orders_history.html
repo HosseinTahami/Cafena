@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+{{page_data.title}}
+{% endblock %}
+{% block content %}
+<section class="breadcrumb-area pt-140 pb-140 bg_img" data-overlay="dark" data-opacity="5" data-background="{{page_data.banner.url}}">
+  <div class="shape shape__1">
+    <img src="{% static 'cafe/images/shape/breadcrumb-shape-1.png' %}" alt="" />
+  </div>
+  <div class="shape shape__2">
+    <img src="{% static 'cafe/images/shape/breadcrumb-shape-2.png' %}" alt="" />
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-12 text-center">
+        <h2 class="page-title">{{page_data.name}}</h2>
+        <div class="cafena-breadcrumb breadcrumbs">
+          <ul class="list-unstyled d-flex align-items-center justify-content-center">
+            <li class="cafenabcrumb-item duxinbcrumb-end">
+              <span>{{page_data.route}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cart-area pt-120 pb-120">
+  <div class="container" >
+    <div class="row" >
+      <div class="col-xl-12" >
+            {% if page_obj %}
+            {% for order in page_obj %}
+            <div class="cart-wrapper" style="background-color: #ffffff; border-color: rgb(87, 60, 20);">
+              <div class="table-content table-responsive">
+            <table class="table" style="background-color:#c7a07aee ;" >
+            <td style="padding-left: 20px;">Phone number: {{ order.customer.phone_number }}</td>
+            <td>Status:
+              {%if order.status == 'p' %} pending {% elif order.status == 'a'%} accepted {% else %} rejected {% endif %}
+              </td>
+            <td>Ordered at: {{ order.create_time }}</td>
+            
+          </table>
+            <table class="table" >
+              <thead>
+                <tr>
+                  <th class="cart-product-name" style="padding-left: 20px;">Product Name</th>
+                  <th class="product-price">Price</th>
+                  <th class="product-quantity">Quantity</th>
+                  <th class="product-subtotal">subTotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for orderitem in order.orderitem_set.all %}
+                <tr>
+                  <td class="product-name" style="padding-left: 20px;">
+                    <a href="#">{{ orderitem.product.name }}</a>
+                  </td>
+                  <td class="product-price">
+                    <span class="amount">{{ orderitem.price }}</span>
+                  </td>
+                  <td class="product-quantity">{{ orderitem.quantity }}</td>
+                  <td class="product-subtotal">
+                    <span class="amount">{{ orderitem.get_cost }}</span>
+                  </td>
+                </tr>
+
+                {% endfor %}
+                <tr style="background-color: #c7a07ac4;">
+                  
+                  <td colspan="3" style="padding-left: 20px;">Total Price: {{ order.get_total_price }}$</td>
+                  <td>Paid:
+                  {% if order.paid %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                    </svg>
+                  {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                  </svg>
+                </i>{% endif %}
+              </td>
+                </tr>
+                <tr>
+                  <td colspan="2"><a href="{% url 'orders:reorder' order.id %}" class="site-btn site-btn__border" >Reorder</a></td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+        <br>
+            {% endfor %}
+
+            <div class="pagination">
+              <span class="step-links">
+                {% if page_obj.has_previous %}
+                  <a href="?page=1">&laquo; first</a>
+                  <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+          
+                <span class="current-page">
+                  {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                
+                {% if page_obj.has_next %}
+                  <a href="?page={{ page_obj.next_page_number }}">next</a>
+                  <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+              </span>
+            </div>
+
+            {% else %}
+            <h1 class="text-center">History is empty!</h1>
+            {% endif %}
+
+
+
+          
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

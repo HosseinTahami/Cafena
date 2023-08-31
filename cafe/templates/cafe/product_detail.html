@@ -1,53 +1,87 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %} 
-<hr>  
-<div class="container pb-12">  
-        <div class="row mt-5">      
-                <div class="col-md-5">           
-                        <img src="{{ product.image.url }}" alt="Product Image" width="400" class="img-fluid">             
-                </div>             
-                <div class="col-md-6">                   
-                        <h1 class="mb-4">{{product.name}}</h1>                
-                        <p class="text-secondary">{{product.description}}</p>  
-                        <br>                        
+
+<section
+  class="breadcrumb-area pt-140 pb-140 bg_img"
+  data-overlay="dark"
+  data-opacity="5"
+  data-background="{{page_data.banner.url}}"
+>
+  <div class="shape shape__1">
+    <img src="{% static 'cafe/images/shape/breadcrumb-shape-1.png' %}" alt="" />
+  </div>
+  <div class="shape shape__2">
+    <img src="{% static 'cafe/images/shape/breadcrumb-shape-2.png' %}" alt="" />
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-12 text-center">
+        <h2 class="page-title">{{page_data.name}}</h2>
+        <div class="cafena-breadcrumb breadcrumbs">
+          <ul
+            class="list-unstyled d-flex align-items-center justify-content-center"
+          >
+            <li class="cafenabcrumb-item duxinbcrumb-end">
+              <span>{{page_data.route}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+<div class="container pb-12">
+        <div class="row mt-5">
+                <div class="col-md-5">
+                        <img src="{{ product.image.url }}" alt="Product Image" width="400" class="img-fluid">
+                </div>
+                <div class="col-md-6">
+                        <h1 class="mb-4">{{product.name}}</h1>
+                        <p class="text-secondary">{{product.description}}</p>
+                        <br>
                         <h3 style="display: inline-block;">Price : </h3>
-                        <h3 class="text-secondary" style="display: inline-block;"> {{product.price}}</h3> 
-                        <br>                 
+                        <h3 class="text-secondary" style="display: inline-block;"> {{product.price}}</h3>
+                        <br>
                         <p>Availability: In Stock</p>
-                        <br>                      
+                        <br>
                         <div class="card-body">
-                                <form method="post" action="{% url 'orders:cart_add' product.id %}">
-                                    {% csrf_token %}
-                                    <div class="form-group col-3" style="display: inline-block;">
-                                        <label for="id_quantity">Quantity:</label>
-                                        {{ form.quantity }}
-                                    </div>
-                                    <div class="form-group" style="display: inline-block;">
-                                        <button type="submit" class="btn btn-primary btn-block">
-                                            <i class="fas fa-utensils"></i> Add to Order
-                                        </button>
-                                    </div>
+                                <form method="post" class="quantityForm" data-product-id="{{ product.id }}"
+                                        data-product-name="{{ product.name }}" data-product-price="{{ product.price }}"
+                                        data-product-image="{{ product.image.url }}">
+                                        {% csrf_token %}
+                                        <div class="form-group" style="display: inline-block">
+                                                <label for="quantity">Quantity:</label>
+                                                <input class="form-control-sm" type="number" id="quantity"
+                                                        name="quantity" style="width: 60px" value="1" />
+                                        </div>
+                                        <div class="form-group" style="display: inline-block">
+                                                <button type="submit" class="btn btn-primary btn-block">
+                                                        <i class="fas fa-utensils"></i> Add to Order
+                                                </button>
+                                        </div>
                                 </form>
-                            </div>                     
-                </div>                       
-        </div>                  
-        <div class="row mt-5">                            
-                <div class="col">                         
-                        <h3>Materials used</h3>                       
-                        <ul>                             
-                                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>                              
-                                <li>Duis blandit elit in eros aliquam, eget rhoncus erat ultricies.</li>                                      
-                                <li>Aliquam porttitor sapien eget malesuada tincidunt.</li>                                          
-                                <li>Proin maximus lorem sed feugiat convallis.</li>                                        
-                                <li>Cras eget metus scelerisque, vestibulum nibh quis, faucibus dolor.</li>                                     
-                        </ul>                                              
-                </div>                                                   
-        </div>                                                       
- </div>
- <br>
- <br>
- <br>
- <br>
- 
+                        </div>
+                </div>
+        </div>
+        <div class="row mt-5">
+                <div class="col">
+                        <h3>Materials used</h3>
+                        <ul>
+                                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                                <li>Duis blandit elit in eros aliquam, eget rhoncus erat ultricies.</li>
+                                <li>Aliquam porttitor sapien eget malesuada tincidunt.</li>
+                                <li>Proin maximus lorem sed feugiat convallis.</li>
+                                <li>Cras eget metus scelerisque, vestibulum nibh quis, faucibus dolor.</li>
+                        </ul>
+                </div>
+        </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+
 {% endblock %}

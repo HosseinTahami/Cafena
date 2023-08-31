@@ -1,4 +1,7 @@
+# django imports
 from django.db import models
+
+# inner modules imports
 from cafe.models import Product
 from accounts.models import Personnel, Customer
 
@@ -20,12 +23,22 @@ class Order(models.Model):
     personnel = models.ForeignKey(Personnel, null=True, on_delete=models.PROTECT)
     table = models.ForeignKey(Table, null=True, on_delete=models.PROTECT)
 
+    class Meta:
+        permissions = [
+            ("change_status", "Can change status"),
+            ("change_paid", "Can change paid status"),
+        ]
+
     def get_total_price(self):
         return sum(item.get_cost() for item in self.orderitem_set.all())
 
     def __str__(self) -> str:
         return f"{self.status} || {self.create_time}"
 
+    def save(self, *args, **kwargs):
+        if (self.paid and (str(self.status) in 'pr')):
+            raise AssertionError
+        super().save(*args, **kwargs)
 
 class OrderItem(models.Model):
     quantity = models.IntegerField(default=1)

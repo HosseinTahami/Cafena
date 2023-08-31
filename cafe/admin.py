@@ -1,19 +1,25 @@
+# django imports
 from django.contrib import admin
 from django.shortcuts import render
 from django.urls import path
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import admin
 from django import forms
-from .models import Category, Product
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from import_export.admin import ImportExportModelAdmin
+# inner modules imports
+from .models import Category, Product, Contact
+
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ImportExportModelAdmin , admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
+
+
 
 
 class csvImportForm(forms.Form):
@@ -21,7 +27,7 @@ class csvImportForm(forms.Form):
 
 
 @admin.register(Product)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ImportExportModelAdmin ,admin.ModelAdmin):
     list_display = ("name", "price", "is_available", "category")
     list_filter = ("is_available", "category")
     search_fields = ("name", "price")
@@ -70,3 +76,5 @@ class CategoryAdmin(admin.ModelAdmin):
         form = csvImportForm()
         data = {"form": form}
         return render(request, "admin/csv_upload.html", data)
+
+admin.site.register(Contact)
