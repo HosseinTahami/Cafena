@@ -1,6 +1,7 @@
 # django imports
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -38,6 +39,9 @@ class CheckoutView(View):
             ]
         except:
             last_phone_number = None
+        total_price = cart.total_price()
+        print(request.session.get("orders_info"))
+
         initial_values = {"phone_number": last_phone_number}
         form = CustomerForm(initial=initial_values)
         page_data = PageData.get_page_date("Checkout_Page")
@@ -140,14 +144,18 @@ class OrdersHistoryView(View):
         session = request.session.get("orders_info")
         try:
             order_ids = list(session.keys())
-            orders = Order.objects.filter(id__in=order_ids)
+            orders = Order.objects.filter(id__in=order_ids).order_by("-create_time")
+            paginator = Paginator(orders, 5)
+            page_number = request.GET.get("page")
+            page_obj = paginator.get_page(page_number)
         except:
-            orders = None
-        page_data = PageData.get_page_date("History_Page")
+            page_obj = None
+        page_data = PageData.get_page_date("Details_Page")
+
         return render(
             request,
             "orders/orders_history.html",
-            {"orders": orders, "page_data": page_data},
+            {"page_obj": page_obj, "page_data": page_data},
         )
 
 
