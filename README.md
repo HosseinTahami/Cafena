@@ -1,6 +1,6 @@
 Welcome, this is Readme.md file of Cafena website.
 
-# Project Name
+# Cafena
 
 Cafena, an online menu for your cafe.
 
